@@ -3,6 +3,7 @@ import * as comments from "@custom/db/schema/comments";
 import * as categories from "@custom/db/schema/categories";
 import * as categoriesToPosts from "@custom/db/schema/categoriesToPosts";
 import * as employees from "@custom/db/schema/employees";
+import * as blogPosts from "@custom/db/schema/blogPosts";
 
 export const tableSchemas = {
     posts,
@@ -10,6 +11,7 @@ export const tableSchemas = {
     categories,
     categoriesToPosts,
     employees,
+    blogPosts,
     users, // Core table schema DO NOT REMOVE
     userSessions, // Core table schema DO NOT REMOVE
     cacheRequests, // Core table schema DO NOT REMOVE
@@ -43,6 +45,12 @@ export const {
 export const {
     table: employeesTable,
 } = employees;
+
+// Export all constants from blogPosts
+export const {
+    table: blogPostsTable,
+    relation: blogPostsRelation,
+} = blogPosts;
 
 // Core table schemas DO NOT EDIT BELOW THIS LINE
 

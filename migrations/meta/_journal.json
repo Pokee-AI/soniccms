@@ -57,6 +57,13 @@
       "when": 1747867509179,
       "tag": "0007_fresh_mongoose",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1756364921059,
+      "tag": "0008_tan_warbird",
+      "breakpoints": true
     }
   ]
 }

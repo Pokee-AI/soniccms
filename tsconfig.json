@@ -14,5 +14,6 @@
       "@emails/*": ["./emails/*"],
 
     }
-  }
+  },
+  "moduleResolution": "bundler"
 }
