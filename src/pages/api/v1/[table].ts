@@ -185,7 +185,9 @@ export const POST: APIRoute = async (context) => {
   );
   const isAdminAccountCreated =
     context.locals.runtime.env.isAdminAccountCreated ?? true;
-  if (!authorized && isAdminAccountCreated) {
+  
+  // Allow registration if no admin exists, or if authorized and admin exists
+  if (isAdminAccountCreated && !authorized) {
     return return401();
   }
 
