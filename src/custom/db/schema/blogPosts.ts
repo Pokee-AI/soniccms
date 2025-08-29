@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 import { auditSchema } from "@schema/audit";
-import { isAdminOrEditor, isAdminOrUser } from "../../../db/config-helpers";
+import { isAdminOrEditor, isAdminOrUser, isAdmin } from "../../../db/config-helpers";
 import type { ApiConfig } from "../../../db/routes";
 
 export const tableName = "blogPosts";
@@ -136,13 +136,29 @@ export const relation = relations(table, ({ }) => ({
 
 export const access: ApiConfig["access"] = {
   operation: {
-    read: true, // Public read access for published posts
-    create: isAdminOrEditor,
-    update: isAdminOrUser,
-    delete: isAdminOrUser,
+    read: true,           // Public read access (good)
+    create: isAdminOrEditor,  // Only admins/editors can create
+    update: isAdminOrEditor,  // Only admins/editors can update
+    delete: isAdmin,      // Only admins can delete
   },
   fields: {
-    // No field restrictions needed
+    // Add field-level restrictions
+    id: {
+      read: true,
+      update: false,      // ID should never change
+    },
+    createdOn: {
+      read: true,
+      update: false,      // Creation date should never change
+    },
+    updatedOn: {
+      read: true,
+      update: isAdminOrEditor,  // Only admins/editors can modify
+    },
+    status: {
+      read: true,
+      update: isAdminOrEditor,  // Publishing status control
+    }
   },
 };
 
