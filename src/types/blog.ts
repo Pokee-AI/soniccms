@@ -48,8 +48,6 @@ export type ComparisonData = {
   conclusion: string;
   key_takeaways?: string[];
   faqs?: FAQ[];
-  cta_text?: string; // Call to action text
-  cta_link?: string; // Call to action link
   related_comparisons?: RelatedComparison[]; // Related blog posts
 };
 
@@ -151,8 +149,6 @@ export type FlattenedBlogPost = {
   faq4Question?: string;
   faq4Answer?: string;
   
-  ctaText?: string;
-  ctaLink?: string;
   relatedComparisons?: string; // JSON array as string
   status: 'draft' | 'published' | 'archived';
   createdOn?: number;
@@ -176,8 +172,6 @@ export type BlogPost = {
   conclusion: string;
   keyTakeaways?: string[];
   faqs?: FAQ[];
-  ctaText?: string;
-  ctaLink?: string;
   relatedComparisons?: RelatedComparison[];
   status: 'draft' | 'published' | 'archived';
   featured: number; // 0 or 1

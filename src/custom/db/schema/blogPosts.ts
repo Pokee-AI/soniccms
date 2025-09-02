@@ -110,8 +110,6 @@ export const definition = {
   faq4Question: text("faq4Question"),
   faq4Answer: text("faq4Answer"),
   
-  ctaText: text("ctaText"),
-  ctaLink: text("ctaLink"),
   relatedComparisons: text("relatedComparisons"), // JSON array
   status: text("status").$type<"draft" | "published" | "archived">().default("draft"),
 };
@@ -486,12 +484,6 @@ export const fields: ApiConfig["fields"] = {
     type: "textArea",
   },
   
-  ctaText: {
-    type: "textField",
-  },
-  ctaLink: {
-    type: "textField",
-  },
   relatedComparisons: {
     type: "textArea",
   },
