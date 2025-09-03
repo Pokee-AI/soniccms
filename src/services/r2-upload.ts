@@ -1,5 +1,5 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import 'dotenv/config';
+// import 'dotenv/config';
 
 interface UploadResult {
   success: boolean;
@@ -19,17 +19,7 @@ export class R2UploadService {
 
   constructor() {
     this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs-media';
-    
-    // Debug: Log configuration (without sensitive data)
-    console.log('R2 Configuration:');
-    console.log('- Account ID:', process.env.R2_ACCOUNT_ID ? 'Set' : 'Missing');
-    console.log('- Access Key ID:', process.env.R2_ACCESS_KEY_ID ? 'Set' : 'Missing');
-    console.log('- Secret Access Key:', process.env.R2_SECRET_ACCESS_KEY ? 'Set' : 'Missing');
-    console.log('- Bucket Name:', this.bucketName);
-    console.log('- Public Domain:', process.env.R2_PUBLIC_DOMAIN || 'Not set');
-    console.log('- All env vars:', Object.keys(process.env).filter(key => key.startsWith('R2_')));
-    console.log('- All process.env keys:', Object.keys(process.env).slice(0, 10)); // Show first 10 env vars
-    
+
     this.client = new S3Client({
       region: 'auto',
       endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
