@@ -6,8 +6,7 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { relations, type InferSelectModel } from "drizzle-orm";
 import { auditSchema } from "./audit";
-import * as posts from "@custom/db/schema/posts";
-import * as comments from "@custom/db/schema/comments";
+
 // import * as userKeys from "./userKeys";
 // import * as userSessions from "./userSessions";
 import { isAdmin, isAdminOrEditor, isAdminOrUser, usersCanRegister } from "../config-helpers";
@@ -52,8 +51,6 @@ export const table = sqliteTable(
 export type User = InferSelectModel<typeof table>;
 
 export const relation = relations(table, ({ many }) => ({
-  posts: many(posts.table),
-  comments: many(comments.table),
   // keys: many(userKeys.table),
   // sessions: many(userSessions.table),
 }));
