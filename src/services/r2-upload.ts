@@ -1,0 +1,140 @@
+import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import 'dotenv/config';
+
+interface UploadResult {
+  success: boolean;
+  url?: string;
+  error?: string;
+}
+
+interface FileMetadata {
+  name: string;
+  type: string;
+  size: number;
+}
+
+export class R2UploadService {
+  private client: S3Client;
+  private bucketName: string;
+
+  constructor() {
+    this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs-media';
+    
+    // Debug: Log configuration (without sensitive data)
+    console.log('R2 Configuration:');
+    console.log('- Account ID:', process.env.R2_ACCOUNT_ID ? 'Set' : 'Missing');
+    console.log('- Access Key ID:', process.env.R2_ACCESS_KEY_ID ? 'Set' : 'Missing');
+    console.log('- Secret Access Key:', process.env.R2_SECRET_ACCESS_KEY ? 'Set' : 'Missing');
+    console.log('- Bucket Name:', this.bucketName);
+    console.log('- Public Domain:', process.env.R2_PUBLIC_DOMAIN || 'Not set');
+    console.log('- All env vars:', Object.keys(process.env).filter(key => key.startsWith('R2_')));
+    console.log('- All process.env keys:', Object.keys(process.env).slice(0, 10)); // Show first 10 env vars
+    
+    this.client = new S3Client({
+      region: 'auto',
+      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      credentials: {
+        accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
+        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+      },
+      forcePathStyle: true, // Required for R2
+    });
+  }
+
+  async uploadFile(
+    file: File | Buffer,
+    fileName: string,
+    contentType: string
+  ): Promise<UploadResult> {
+    try {
+      // Generate unique filename to prevent conflicts
+      const timestamp = Date.now();
+      
+      // Sanitize the filename to remove problematic characters
+      const sanitizedFileName = this.sanitizeFileName(fileName);
+      const uniqueFileName = `${timestamp}-${sanitizedFileName}`;
+      const key = `blog-posts/${uniqueFileName}`;
+
+      // Convert File to Buffer if needed
+      let fileBuffer: Buffer;
+      if (file instanceof File) {
+        const arrayBuffer = await file.arrayBuffer();
+        fileBuffer = Buffer.from(arrayBuffer);
+      } else {
+        fileBuffer = file;
+      }
+
+      const command = new PutObjectCommand({
+        Bucket: this.bucketName,
+        Key: key,
+        Body: fileBuffer,
+        ContentType: contentType,
+        ACL: 'public-read', // Make files publicly accessible
+      });
+
+      await this.client.send(command);
+
+      // Return the public URL
+      const publicUrl = `https://${process.env.R2_PUBLIC_DOMAIN || 'pub-${process.env.R2_ACCOUNT_ID}.r2.dev'}/${key}`;
+
+      return {
+        success: true,
+        url: publicUrl,
+      };
+    } catch (error) {
+      console.error('R2 upload error:', error);
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        stack: error.stack,
+      });
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown upload error',
+      };
+    }
+  }
+
+  sanitizeFileName(fileName: string): string {
+    // Remove or replace problematic characters
+    return fileName
+      .replace(/[,\s]/g, '_') // Replace commas and spaces with underscores
+      .replace(/[^a-zA-Z0-9._-]/g, '') // Remove any other special characters except dots, underscores, and hyphens
+      .replace(/_{2,}/g, '_') // Replace multiple consecutive underscores with single underscore
+      .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
+  }
+
+  validateFile(file: File): { valid: boolean; error?: string } {
+    // Check file size (max 50MB)
+    const maxSize = 50 * 1024 * 1024; // 50MB
+    if (file.size > maxSize) {
+      return { valid: false, error: 'File size must be less than 50MB' };
+    }
+
+    // Check file type
+    const allowedTypes = [
+      'image/jpeg',
+      'image/jpg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'video/mp4',
+      'video/webm',
+      'video/ogg',
+      'video/quicktime',
+    ];
+
+    if (!allowedTypes.includes(file.type)) {
+      return {
+        valid: false,
+        error: 'File type not supported. Please upload images (JPEG, PNG, GIF, WebP) or videos (MP4, WebM, OGG, MOV)',
+      };
+    }
+
+    return { valid: true };
+  }
+
+
+}
+
+export const r2UploadService = new R2UploadService();

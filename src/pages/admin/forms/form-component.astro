@@ -3,6 +3,7 @@ import { apiConfig } from "../../../db/routes";
 import { getFieldDefinitions } from "../../../services/fields";
 import TextField from "./fields/text-field.astro";
 import TextArea from "./fields/text-area.astro";
+import FileUploadField from "./fields/file-upload-field.astro";
 
 const { record, title = "Edit" } = Astro.props;
 const { form } = Astro.params;
@@ -23,8 +24,13 @@ const tableConfig = getFieldDefinitions(tableConfigRecord, record);
           {
             tableConfig.formFields.map((field) => (
               <div class="mt-4">
-                <TextField field={field} />
-                <TextArea field={field} />
+                {(field.key.includes('MediaUrls') && field.type === "textField") ? (
+                  <FileUploadField field={field} record={record} />
+                ) : field.type === "textArea" ? (
+                  <TextArea field={field} />
+                ) : (
+                  <TextField field={field} />
+                )}
               </div>
             ))
           }

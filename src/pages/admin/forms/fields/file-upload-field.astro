@@ -1,0 +1,222 @@
+---
+import { apiConfig } from "../../../../db/routes";
+import { getFieldDefinitions } from "../../../../services/fields";
+
+const { field, record } = Astro.props;
+const { form } = Astro.params;
+
+const tableConfigRecord = apiConfig.find((t) => t.route === form);
+const tableConfig = getFieldDefinitions(tableConfigRecord, record);
+
+// Get the current value for this field
+const currentValue = record?.[field.key] || '';
+---
+
+<div class="mt-4">
+  <label class="block text-sm font-medium text-white">
+    {field.key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+  </label>
+  
+  <!-- File Input -->
+  <div class="mt-2">
+    <input
+      type="file"
+      multiple
+      accept="image/*,video/*"
+      class="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-500 file:text-white hover:file:bg-indigo-400"
+      id={`file-input-${field.key}`}
+    />
+  </div>
+
+  <!-- Hidden input for form submission -->
+  <input
+    type="hidden"
+    name={field.key}
+    value={currentValue}
+    id={`hidden-input-${field.key}`}
+  />
+
+  <!-- Upload Status -->
+  <div id={`upload-status-${field.key}`} class="mt-2 hidden">
+    <div class="flex items-center space-x-2">
+      <div class="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+      <span class="text-sm text-gray-300">Uploading...</span>
+    </div>
+  </div>
+
+  <!-- Error Display -->
+  <div id={`error-display-${field.key}`} class="mt-2 hidden">
+    <div class="text-red-400 text-sm bg-red-900/20 border border-red-500/20 rounded-md p-3">
+      <span id={`error-text-${field.key}`}></span>
+    </div>
+  </div>
+
+  <!-- Existing Files Display -->
+  <div id={`existing-files-${field.key}`} class="mt-4">
+    <!-- Files will be displayed here -->
+  </div>
+</div>
+
+<script define:vars={{ fieldKey: field.key }}>
+  // File upload functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById(`file-input-${fieldKey}`);
+    const hiddenInput = document.getElementById(`hidden-input-${fieldKey}`);
+    const uploadStatus = document.getElementById(`upload-status-${fieldKey}`);
+    const errorDisplay = document.getElementById(`error-display-${fieldKey}`);
+    const errorText = document.getElementById(`error-text-${fieldKey}`);
+    const existingFiles = document.getElementById(`existing-files-${fieldKey}`);
+
+    // Parse existing URLs - handle corrupted URLs with commas in filenames
+    const currentValue = hiddenInput.value;
+    let existingUrls = [];
+    
+    if (currentValue) {
+      // If the value contains a full URL (starts with http), treat it as a single URL
+      if (currentValue.startsWith('http') && !currentValue.includes('|') && !currentValue.includes(',')) {
+        existingUrls = [currentValue];
+      } else if (currentValue.includes('|')) {
+        // New format with pipe separator
+        existingUrls = currentValue.split('|').filter(url => url.trim());
+      } else if (currentValue.includes(',')) {
+        // Handle corrupted URLs that were split by commas
+        const parts = currentValue.split(',').filter(part => part.trim());
+        
+        // Try to reconstruct the original URL
+        if (parts.length > 0 && parts[0].startsWith('http')) {
+          // This looks like a corrupted URL - try to reconstruct it
+          const baseUrl = parts[0];
+          const remainingParts = parts.slice(1);
+          
+          // If we have remaining parts, they might be the filename that got split
+          if (remainingParts.length > 0) {
+            // Reconstruct the full URL by joining the remaining parts
+            const reconstructedUrl = baseUrl + remainingParts.join('');
+            existingUrls = [reconstructedUrl];
+          } else {
+            existingUrls = [baseUrl];
+          }
+        } else {
+          // Regular comma-separated URLs
+          existingUrls = parts;
+        }
+      }
+    }
+
+    // Display existing files
+    function displayExistingFiles() {
+      if (existingUrls.length === 0) {
+        existingFiles.innerHTML = '';
+        return;
+      }
+
+      const filesHtml = existingUrls.map((url, index) => {
+        const fileName = url.split('/').pop() || `File ${index + 1}`;
+        const fileType = getFileType(url);
+        
+                 return `
+           <div class="relative group bg-gray-800 rounded-lg p-3 border border-gray-700 mb-2">
+             <button type="button" onclick="removeFile_${fieldKey}('${url}')" class="absolute top-2 right-2 text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity">
+               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+               </svg>
+             </button>
+            <div class="space-y-2">
+              ${fileType === 'image' ? 
+                `<img src="${url}" alt="${fileName}" class="w-full h-32 object-cover rounded-md">` :
+                fileType === 'video' ? 
+                `<video src="${url}" class="w-full h-32 object-cover rounded-md" controls></video>` :
+                `<div class="w-full h-32 bg-gray-700 rounded-md flex items-center justify-center">
+                  <span class="text-gray-400">File</span>
+                </div>`
+              }
+              <p class="text-xs text-gray-400 truncate" title="${fileName}">${fileName}</p>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      existingFiles.innerHTML = `
+        <h4 class="text-sm font-medium text-gray-300 mb-2">Uploaded Files:</h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          ${filesHtml}
+        </div>
+      `;
+    }
+
+    function getFileType(url) {
+      const extension = url.split('.').pop()?.toLowerCase();
+      if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(extension || '')) {
+        return 'image';
+      }
+      if (['mp4', 'webm', 'ogg', 'mov'].includes(extension || '')) {
+        return 'video';
+      }
+      return 'unknown';
+    }
+
+    // Handle file selection
+    fileInput.addEventListener('change', async function(event) {
+      const files = event.target.files;
+      if (!files || files.length === 0) return;
+
+      // Show upload status
+      uploadStatus.classList.remove('hidden');
+      errorDisplay.classList.add('hidden');
+
+      try {
+        const formData = new FormData();
+        Array.from(files).forEach(file => {
+          formData.append('files', file);
+        });
+
+        const response = await fetch('/api/v1/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Upload failed');
+        }
+
+        const result = await response.json();
+        
+        if (result.success && result.urls) {
+          // Combine existing URLs with new ones
+          const allUrls = [...existingUrls, ...result.urls];
+          // Use a delimiter that won't appear in URLs
+          const urlString = allUrls.join('|');
+          hiddenInput.value = urlString;
+          
+          // Update existing URLs array and redisplay
+          existingUrls.length = 0;
+          existingUrls.push(...allUrls);
+          displayExistingFiles();
+        }
+
+      } catch (err) {
+        errorText.textContent = err.message || 'Upload failed';
+        errorDisplay.classList.remove('hidden');
+      } finally {
+        uploadStatus.classList.add('hidden');
+        // Reset file input
+        fileInput.value = '';
+      }
+    });
+
+         // Global function for removing files
+     window[`removeFile_${fieldKey}`] = function(urlToRemove) {
+       const index = existingUrls.indexOf(urlToRemove);
+       if (index > -1) {
+         existingUrls.splice(index, 1);
+         const urlString = existingUrls.join('|');
+         hiddenInput.value = urlString;
+         displayExistingFiles();
+       }
+     };
+
+    // Initialize display
+    displayExistingFiles();
+  });
+</script>
