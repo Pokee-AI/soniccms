@@ -40,7 +40,7 @@ function Table({ tableConfig, token }) {
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(false);
-  const [columnFilters, setColumnFilters] = useState([{id:'title', value: ''}]);
+  const [columnFilters, setColumnFilters] = useState([{id:'seoTitle', value: ''}]);
 
   const pageSize = 100;
 
