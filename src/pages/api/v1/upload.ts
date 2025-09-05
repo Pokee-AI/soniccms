@@ -13,12 +13,12 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Convert Files to Buffers for R2 upload
+    // Convert Files to Uint8Array for R2 upload
     const fileBuffers = await Promise.all(
       files.map(async (file) => {
         const arrayBuffer = await file.arrayBuffer();
         return {
-          buffer: Buffer.from(arrayBuffer),
+          buffer: new Uint8Array(arrayBuffer),
           fileName: file.name,
           contentType: file.type,
         };

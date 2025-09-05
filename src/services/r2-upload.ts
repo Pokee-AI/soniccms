@@ -32,7 +32,7 @@ export class R2UploadService {
   }
 
   async uploadFile(
-    file: File | Buffer,
+    file: File | Uint8Array,
     fileName: string,
     contentType: string
   ): Promise<UploadResult> {
@@ -45,11 +45,11 @@ export class R2UploadService {
       const uniqueFileName = `${timestamp}-${sanitizedFileName}`;
       const key = `blog-posts/${uniqueFileName}`;
 
-      // Convert File to Buffer if needed
-      let fileBuffer: Buffer;
+      // Convert File to Uint8Array if needed
+      let fileBuffer: Uint8Array;
       if (file instanceof File) {
         const arrayBuffer = await file.arrayBuffer();
-        fileBuffer = Buffer.from(arrayBuffer);
+        fileBuffer = new Uint8Array(arrayBuffer);
       } else {
         fileBuffer = file;
       }
