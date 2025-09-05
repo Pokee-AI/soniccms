@@ -9,7 +9,12 @@ export const POST: APIRoute = async ({ request }) => {
     if (!files || files.length === 0) {
       return new Response(
         JSON.stringify({ error: 'No files provided' }),
-        { status: 400 }
+        { 
+          status: 400,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       );
     }
 
@@ -90,7 +95,12 @@ export const POST: APIRoute = async ({ request }) => {
         error: 'Internal server error',
         details: error instanceof Error ? error.message : 'Unknown error'
       }),
-      { status: 500 }
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
     );
   }
 };

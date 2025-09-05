@@ -16,8 +16,9 @@ interface FileMetadata {
 }
 
 export class R2UploadService {
-  private client: S3Client;
+  private client: S3Client | null = null;
   private bucketName: string;
+  private isConfigured: boolean = false;
 
   constructor() {
     // Try to get bucket name from environment or use default
@@ -29,23 +30,31 @@ export class R2UploadService {
     const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
 
     if (!accountId || !accessKeyId || !secretAccessKey) {
-      throw new Error(`Missing R2 credentials. Required: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY. 
+      console.error(`R2UploadService: Missing R2 credentials. Required: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY. 
         Found: accountId=${accountId ? 'Set' : 'Missing'}, accessKeyId=${accessKeyId ? 'Set' : 'Missing'}, secretAccessKey=${secretAccessKey ? 'Set' : 'Missing'}`);
+      this.isConfigured = false;
+      return;
     }
 
-    this.client = new S3Client({
-      region: 'auto',
-      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-      credentials: {
-        accessKeyId: accessKeyId,
-        secretAccessKey: secretAccessKey,
-      },
-      forcePathStyle: true, // Required for R2
-      maxAttempts: 3, // Retry failed requests
-      requestHandler: {
-        requestTimeout: 30000, // 30 second timeout
-      },
-    });
+    try {
+      this.client = new S3Client({
+        region: 'auto',
+        endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+        credentials: {
+          accessKeyId: accessKeyId,
+          secretAccessKey: secretAccessKey,
+        },
+        forcePathStyle: true, // Required for R2
+        maxAttempts: 3, // Retry failed requests
+        requestHandler: {
+          requestTimeout: 30000, // 30 second timeout
+        },
+      });
+      this.isConfigured = true;
+    } catch (error) {
+      console.error('R2UploadService: Failed to initialize S3Client:', error);
+      this.isConfigured = false;
+    }
   }
 
   async uploadFile(
@@ -53,6 +62,13 @@ export class R2UploadService {
     fileName: string,
     contentType: string
   ): Promise<UploadResult> {
+    if (!this.isConfigured || !this.client) {
+      return {
+        success: false,
+        error: 'R2 service is not configured. Please check your environment variables.',
+      };
+    }
+
     try {
       // Generate unique filename to prevent conflicts
       const timestamp = Date.now();
