@@ -21,7 +21,7 @@ export class R2UploadService {
 
   constructor() {
     // Try to get bucket name from environment or use default
-    this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs';
+    this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs-media';
 
     // Check if we have the required environment variables
     const accountId = process.env.R2_ACCOUNT_ID;
@@ -33,19 +33,9 @@ export class R2UploadService {
         Found: accountId=${accountId ? 'Set' : 'Missing'}, accessKeyId=${accessKeyId ? 'Set' : 'Missing'}, secretAccessKey=${secretAccessKey ? 'Set' : 'Missing'}`);
     }
 
-    const endpoint = `https://${accountId}.r2.cloudflarestorage.com`;
-    
-    console.log('R2 Client Configuration:', {
-      endpoint,
-      bucketName: this.bucketName,
-      accountId: accountId ? 'Set' : 'Missing',
-      accessKeyId: accessKeyId ? 'Set' : 'Missing',
-      secretAccessKey: secretAccessKey ? 'Set' : 'Missing',
-    });
-
     this.client = new S3Client({
       region: 'auto',
-      endpoint: endpoint,
+      endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
       credentials: {
         accessKeyId: accessKeyId,
         secretAccessKey: secretAccessKey,
@@ -130,17 +120,6 @@ export class R2UploadService {
       
       if (error.name === 'NetworkError' || error.message?.includes('Network connection lost')) {
         errorMessage = `Network connectivity issue: ${errorMessage}. Please check your R2 configuration and network connection.`;
-      }
-      
-      // Add more specific error handling for common R2 issues
-      if (error.code === 'NoSuchBucket') {
-        errorMessage = `R2 bucket '${this.bucketName}' does not exist. Please create the bucket or check the bucket name.`;
-      } else if (error.code === 'InvalidAccessKeyId') {
-        errorMessage = `Invalid R2 Access Key ID. Please check your R2_ACCESS_KEY_ID environment variable.`;
-      } else if (error.code === 'SignatureDoesNotMatch') {
-        errorMessage = `Invalid R2 Secret Access Key. Please check your R2_SECRET_ACCESS_KEY environment variable.`;
-      } else if (error.code === 'AccessDenied') {
-        errorMessage = `Access denied to R2 bucket. Please check your R2 credentials and bucket permissions.`;
       }
       
       return {
