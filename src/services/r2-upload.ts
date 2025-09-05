@@ -20,14 +20,35 @@ export class R2UploadService {
   private bucketName: string;
 
   constructor() {
+    // Try to get bucket name from environment or use default
     this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs-media';
+
+    // Check if we have the required environment variables
+    const accountId = process.env.R2_ACCOUNT_ID;
+    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+
+    if (!accountId || !accessKeyId || !secretAccessKey) {
+      throw new Error(`Missing R2 credentials. Required: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY. 
+        Found: accountId=${accountId ? 'Set' : 'Missing'}, accessKeyId=${accessKeyId ? 'Set' : 'Missing'}, secretAccessKey=${secretAccessKey ? 'Set' : 'Missing'}`);
+    }
+
+    const endpoint = `https://${accountId}.r2.cloudflarestorage.com`;
+    
+    console.log('R2 Client Configuration:', {
+      endpoint,
+      bucketName: this.bucketName,
+      accountId: accountId ? 'Set' : 'Missing',
+      accessKeyId: accessKeyId ? 'Set' : 'Missing',
+      secretAccessKey: secretAccessKey ? 'Set' : 'Missing',
+    });
 
     this.client = new S3Client({
       region: 'auto',
-      endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
+      endpoint: endpoint,
       credentials: {
-        accessKeyId: process.env.R2_ACCESS_KEY_ID || '',
-        secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
+        accessKeyId: accessKeyId,
+        secretAccessKey: secretAccessKey,
       },
       forcePathStyle: true, // Required for R2
       maxAttempts: 3, // Retry failed requests
@@ -109,6 +130,17 @@ export class R2UploadService {
       
       if (error.name === 'NetworkError' || error.message?.includes('Network connection lost')) {
         errorMessage = `Network connectivity issue: ${errorMessage}. Please check your R2 configuration and network connection.`;
+      }
+      
+      // Add more specific error handling for common R2 issues
+      if (error.code === 'NoSuchBucket') {
+        errorMessage = `R2 bucket '${this.bucketName}' does not exist. Please create the bucket or check the bucket name.`;
+      } else if (error.code === 'InvalidAccessKeyId') {
+        errorMessage = `Invalid R2 Access Key ID. Please check your R2_ACCESS_KEY_ID environment variable.`;
+      } else if (error.code === 'SignatureDoesNotMatch') {
+        errorMessage = `Invalid R2 Secret Access Key. Please check your R2_SECRET_ACCESS_KEY environment variable.`;
+      } else if (error.code === 'AccessDenied') {
+        errorMessage = `Access denied to R2 bucket. Please check your R2 credentials and bucket permissions.`;
       }
       
       return {
