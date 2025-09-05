@@ -52,12 +52,24 @@ if (Astro.request.method === "POST") {
     const baseURl = Astro.request.url.split("/admin/")[0];
     const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}`;
     
+    console.log("🔍🔍🔍 FORM DEBUG START 🔍🔍🔍");
+    console.log("🔍 Form Debug - Post URL:", postUrl);
+    console.log("🔍 Form Debug - Data being sent:", json);
+    
     const session = Astro.cookies.get("session")?.value;
     const response = await fetch(postUrl, {
       method: "POST",
       body: json,
-      headers: new Headers({ Authorization: `Bearer ${session}` }),
+      headers: new Headers({ 
+        Authorization: `Bearer ${session}`,
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache'
+      }),
     });
+    
+    console.log("🔍 Form Debug - Response status:", response.status);
+    console.log("🔍 Form Debug - Response ok:", response.ok);
+    console.log("🔍🔍🔍 FORM DEBUG END 🔍🔍🔍");
 
     if (!response.ok) {
       const errorText = await response.text();

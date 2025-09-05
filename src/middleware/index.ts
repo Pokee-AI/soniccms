@@ -24,6 +24,13 @@ async function cache(context, next) {
 
   // Skip caching for POST requests - they should always hit the actual endpoint
   if (context.request.method === "POST") {
+    console.log("🔍 Cache Debug - Skipping cache for POST request to:", context.url.pathname);
+    return next();
+  }
+
+  // Skip caching for server-side requests (requests with no-cache header)
+  if (context.request.headers.get("Cache-Control") === "no-cache") {
+    console.log("🔍 Cache Debug - Skipping cache for no-cache request to:", context.url.pathname);
     return next();
   }
 

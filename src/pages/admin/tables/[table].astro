@@ -6,9 +6,13 @@ import { getFieldDefinitions } from "../../../services/fields";
 import DeleteConfirmation from "../../../components/delete-confirmation";
 import { getToken } from "@services/token";
 
+// Check authentication - redirect to login if not authenticated
+if (Astro.locals.user === null) {
+  return Astro.redirect("/admin/login");
+}
+
 const tableConfigRecord = apiConfig.find((t) => t.route === Astro.params.table);
 const tableConfig = getFieldDefinitions(tableConfigRecord);
-
 
 const token = getToken(Astro);
 
