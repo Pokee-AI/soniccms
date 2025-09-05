@@ -21,7 +21,7 @@ export class R2UploadService {
 
   constructor() {
     // Try to get bucket name from environment or use default
-    this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs-media';
+    this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs';
 
     // Check if we have the required environment variables
     const accountId = process.env.R2_ACCOUNT_ID;

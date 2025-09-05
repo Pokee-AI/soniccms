@@ -10,6 +10,7 @@ export const GET: APIRoute = async () => {
       secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ? 'Set' : 'Missing',
       bucketName: process.env.R2_BUCKET_NAME,
       publicDomain: process.env.R2_PUBLIC_DOMAIN,
+      timestamp: new Date().toISOString(), // Add timestamp to prevent caching
     };
 
     console.log('R2 Debug - Environment check:', config);
@@ -70,6 +71,9 @@ export const GET: APIRoute = async () => {
         status: 200,
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
         },
       }
     );
@@ -100,12 +104,16 @@ export const GET: APIRoute = async () => {
           secretAccessKey: process.env.R2_SECRET_ACCESS_KEY ? 'Set' : 'Missing',
           bucketName: process.env.R2_BUCKET_NAME,
           publicDomain: process.env.R2_PUBLIC_DOMAIN,
+          timestamp: new Date().toISOString(),
         },
       }),
       {
         status: 500,
         headers: {
           'Content-Type': 'application/json',
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0',
         },
       }
     );
