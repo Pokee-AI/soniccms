@@ -7,6 +7,9 @@ import FormComponent from "./form-component.astro";
 const { form } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
 
+// Get error message from URL params
+const errorMessage = Astro.url.searchParams.get("error");
+
 // const definitionObject = tableConfig.definition;
 
 // // Convert the nested objects to an array
@@ -26,6 +29,9 @@ const tableConfigRecord = apiConfig.find((t) => t.route === form);
 const tableConfig = getFieldDefinitions(tableConfigRecord);
 
 if (Astro.request.method === "POST") {
+  let success = false;
+  let errorMessage = "";
+  
   try {
     const formData = await Astro.request.formData();
     var data = {};
@@ -45,36 +51,44 @@ if (Astro.request.method === "POST") {
     //now post to our own post api
     const baseURl = Astro.request.url.split("/admin/")[0];
     const postUrl = `${baseURl}/api/v1/${tableConfigRecord.route}`;
-    try {
-      const session = Astro.cookies.get("session")?.value;
-      const response = await fetch(postUrl, {
-        method: "POST",
-        body: json,
-        headers: new Headers({ Authorization: `Bearer ${session}` }),
-      });
+    
+    const session = Astro.cookies.get("session")?.value;
+    const response = await fetch(postUrl, {
+      method: "POST",
+      body: json,
+      headers: new Headers({ Authorization: `Bearer ${session}` }),
+    });
 
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const result = await response.json();
-      // console.log("Success:", result);
-    } catch (error) {
-      console.error("Error:", error);
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`API Error (${response.status}): ${errorText}`);
     }
 
-    // Do something with the data
+    const result = await response.json();
+    console.log("Success:", result);
+    success = true;
+    
   } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    }
-  } finally {
+    console.error("Blog creation error:", error);
+    errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
+  }
+  
+  // Only redirect if successful
+  if (success) {
     return Astro.redirect(`/admin/tables/${tableConfigRecord.route}`);
+  } else {
+    // Redirect back to form with error message
+    return Astro.redirect(`/admin/forms/${tableConfigRecord.route}?error=${encodeURIComponent(errorMessage)}`);
   }
 }
 ---
 
 <AdminLayout title=`SonicJs Admin` | {form} `>
+  {errorMessage && (
+    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
+      <strong>Error:</strong> {errorMessage}
+    </div>
+  )}
   <FormComponent form="{form}" title="New">
 
 
