@@ -16,5 +16,11 @@ export default defineConfig({
   security: {
     checkOrigin: false,
   },
-  vite: {},
+  vite: {
+    build: {
+      rollupOptions: {
+        external: ['@playwright/test', 'vitest', 'drizzle-kit', '@faker-js/faker']
+      }
+    }
+  },
 });
