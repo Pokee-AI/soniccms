@@ -1,6 +1,7 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 // ! always comment this out before pushing to prod
-// import 'dotenv/config';
+import 'dotenv/config';
+// 
 
 interface UploadResult {
   success: boolean;
