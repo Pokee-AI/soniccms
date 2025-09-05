@@ -22,6 +22,11 @@ async function cache(context, next) {
     return next();
   }
 
+  // Skip caching for POST requests - they should always hit the actual endpoint
+  if (context.request.method === "POST") {
+    return next();
+  }
+
   //ignore route with auth, cacheRequests, and kv
   if (
     context.url.pathname.startsWith("/api/v1/auth") ||
@@ -75,16 +80,28 @@ async function auth(context, next) {
 
   try {
     if (sessionId) {
+      console.log("🔍 Middleware Debug - Session ID found:", sessionId.substring(0, 8) + "...");
+      console.log("🔍 Middleware Debug - URL:", context.url.pathname);
+      
       // Validate the session
       const { user, session } = await validateSessionToken(
         context.locals.runtime.env.D1,
         sessionId
       );
-      //   const { user } = await context.locals.auth.validateSession(sessionId);
+      
+      console.log("🔍 Middleware Debug - User validation result:", user ? `User ID: ${user.id}` : "No user");
+      console.log("🔍 Middleware Debug - Session validation result:", session ? "Valid session" : "Invalid session");
+      
       if (user) {
         context.locals.user = user;
         context.locals.session = session;
-
+        console.log("🔍 Middleware Debug - User context set for:", user.id);
+        
+        // Add debug for API requests
+        if (isApi) {
+          console.log("🔍🔍🔍 MIDDLEWARE API DEBUG 🔍🔍🔍");
+          console.log(`🔍 Middleware Debug: User ${user.id} authenticated for API: ${context.url.pathname}`);
+        }
 
         // If user is logged in and tries to access login/register, redirect to admin
         if (isAuthPage) {
@@ -92,7 +109,11 @@ async function auth(context, next) {
         }
 
         return next();
+      } else {
+        console.log("🔍 Middleware Debug - No valid user found for session");
       }
+    } else {
+      console.log("🔍 Middleware Debug - No session ID found for URL:", context.url.pathname);
     }
 
     // Don't redirect if already on auth pages

@@ -144,9 +144,14 @@ export const GET: APIRoute = async (context) => {
 //create single record
 //TODO: support batch inserts
 export const POST: APIRoute = async (context) => {
+  console.log("🔍🔍🔍 POST API ENDPOINT CALLED 🔍🔍🔍");
+  console.log("🔍 POST - URL:", context.url.pathname);
+  console.log("🔍 POST - Method:", context.request.method);
+  
   const { env } = context.locals.runtime;
 
   const params = context.params;
+  console.log("🔍 POST - Params:", params);
 
   const route = params.table;
   let entry;
@@ -178,6 +183,12 @@ export const POST: APIRoute = async (context) => {
 
   content.table = entry.table;
 
+  console.log("🔍🔍🔍 API DEBUG START 🔍🔍🔍");
+  console.log("🔍 API Debug - Context user:", context.locals.user ? `User ID: ${context.locals.user.id}` : "No user");
+  console.log("🔍 API Debug - Context session:", context.locals.session ? "Session exists" : "No session");
+  console.log("🔍 API Debug - Table:", entry.route);
+  console.log("🔍 API Debug - Content data keys:", Object.keys(content.data));
+  
   let authorized = await getOperationCreateResult(
     entry?.access?.operation?.create,
     context,
@@ -186,17 +197,17 @@ export const POST: APIRoute = async (context) => {
   const isAdminAccountCreated =
     context.locals.runtime.env.isAdminAccountCreated ?? true;
   
-  // Debug logging
-  console.log("API Debug - User:", context.locals.user);
-  console.log("API Debug - Authorized:", authorized);
-  console.log("API Debug - isAdminAccountCreated:", isAdminAccountCreated);
-  console.log("API Debug - Table:", entry.route);
+  console.log("🔍 API Debug - Authorized:", authorized);
+  console.log("🔍 API Debug - isAdminAccountCreated:", isAdminAccountCreated);
   
   // Allow registration if no admin exists, or if authorized and admin exists
   if (isAdminAccountCreated && !authorized) {
-    console.log("API Debug - Returning 401: isAdminAccountCreated=true, authorized=false");
+    console.log("🔍 API Debug - Returning 401: isAdminAccountCreated=true, authorized=false");
+    console.log("🔍🔍🔍 API DEBUG END (401) 🔍🔍🔍");
     return return401();
   }
+  
+  console.log("🔍🔍🔍 API DEBUG END (SUCCESS) 🔍🔍🔍");
 
   try {
     // console.log("posting new record content", JSON.stringify(content, null, 2));
