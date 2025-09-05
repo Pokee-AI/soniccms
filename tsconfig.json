@@ -19,6 +19,7 @@
     "tests-examples/**/*",
     "src/**/*.test.ts",
     "src/**/*.spec.ts",
+    "src/db/utils/bulk-data.ts",
     "playwright.config.ts",
     "vitest.config.ts",
     "drizzle.config.ts"
