@@ -1,4 +1,5 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+// ! always comment this out before pushing to prod
 // import 'dotenv/config';
 
 interface UploadResult {
@@ -65,7 +66,7 @@ export class R2UploadService {
       await this.client.send(command);
 
       // Return the public URL
-      const publicUrl = `https://${process.env.R2_PUBLIC_DOMAIN || 'pub-${process.env.R2_ACCOUNT_ID}.r2.dev'}/${key}`;
+      const publicUrl = `https://${process.env.R2_PUBLIC_DOMAIN || `pub-${process.env.R2_ACCOUNT_ID}.r2.dev`}/${key}`;
 
       return {
         success: true,
