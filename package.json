@@ -42,6 +42,7 @@
     "typescript": "^5.6.2"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250905.0",
     "@faker-js/faker": "^9.6.0",
     "@playwright/test": "^1.50.1",
     "@types/node": "^22.7.3",

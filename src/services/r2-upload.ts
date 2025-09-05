@@ -1,7 +1,5 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-// ! always comment this out before pushing to prod
-// import 'dotenv/config';
-// 
+import type { R2Bucket } from '@cloudflare/workers-types';
 
 interface UploadResult {
   success: boolean;
@@ -9,182 +7,140 @@ interface UploadResult {
   error?: string;
 }
 
-interface FileMetadata {
-  name: string;
-  type: string;
-  size: number;
+// This interface helps TypeScript understand the Cloudflare environment.
+declare global {
+  namespace App.Locals {
+    interface Runtime {
+      env: {
+        R2STORAGE: R2Bucket;
+        R2_PUBLIC_DOMAIN: string;
+      };
+    }
+  }
 }
 
 export class R2UploadService {
-  private client: S3Client | null = null;
-  private bucketName: string;
-  private isConfigured: boolean = false;
+  private s3Client: S3Client | null = null;
+  private isLocalDev = false;
+  private localConfig: { bucketName: string; publicDomain: string } | null = null;
 
   constructor() {
-    // Try to get bucket name from environment or use default
-    this.bucketName = process.env.R2_BUCKET_NAME || 'sonicjs-media';
+    // This uses Astro's environment variable to detect if we are in development mode.
+    if (import.meta.env.DEV) {
+      this.isLocalDev = true;
+      console.log('R2UploadService: Running in local development mode.');
 
-    // Check if we have the required environment variables
-    const accountId = process.env.R2_ACCOUNT_ID;
-    const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-    const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+      // In dev mode, we configure the S3 client using .env variables
+      const accountId = import.meta.env.R2_ACCOUNT_ID;
+      const accessKeyId = import.meta.env.R2_ACCESS_KEY_ID;
+      const secretAccessKey = import.meta.env.R2_SECRET_ACCESS_KEY;
+      const bucketName = import.meta.env.R2_BUCKET_NAME;
+      const publicDomain = import.meta.env.R2_PUBLIC_DOMAIN;
 
-    if (!accountId || !accessKeyId || !secretAccessKey) {
-      console.error(`R2UploadService: Missing R2 credentials. Required: R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY. 
-        Found: accountId=${accountId ? 'Set' : 'Missing'}, accessKeyId=${accessKeyId ? 'Set' : 'Missing'}, secretAccessKey=${secretAccessKey ? 'Set' : 'Missing'}`);
-      this.isConfigured = false;
-      return;
-    }
-
-    try {
-      this.client = new S3Client({
-        region: 'auto',
-        endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-        credentials: {
-          accessKeyId: accessKeyId,
-          secretAccessKey: secretAccessKey,
-        },
-        forcePathStyle: true, // Required for R2
-        maxAttempts: 3, // Retry failed requests
-        requestHandler: {
-          requestTimeout: 30000, // 30 second timeout
-        },
-      });
-      this.isConfigured = true;
-    } catch (error) {
-      console.error('R2UploadService: Failed to initialize S3Client:', error);
-      this.isConfigured = false;
+      if (accountId && accessKeyId && secretAccessKey && bucketName && publicDomain) {
+        this.s3Client = new S3Client({
+          region: 'auto',
+          endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+          credentials: {
+            accessKeyId,
+            secretAccessKey,
+          },
+        });
+        this.localConfig = { bucketName, publicDomain };
+        console.log('R2UploadService: S3 client configured for local R2 access.');
+      } else {
+        console.error('R2UploadService: Missing R2 environment variables for local development.');
+      }
     }
   }
 
   async uploadFile(
-    file: File | Uint8Array,
-    fileName: string,
-    contentType: string
+    fileDetails: {
+      fileBody: ArrayBuffer;
+      fileName: string;
+      contentType: string;
+    },
+    runtime?: App.Locals.Runtime
   ): Promise<UploadResult> {
-    if (!this.isConfigured || !this.client) {
-      return {
-        success: false,
-        error: 'R2 service is not configured. Please check your environment variables.',
-      };
-    }
+    const { fileBody, fileName, contentType } = fileDetails;
 
-    try {
-      // Generate unique filename to prevent conflicts
-      const timestamp = Date.now();
+    // --- Production Path (using R2 Binding) ---
+    if (runtime?.env?.R2STORAGE) {
+      const bucket = runtime.env.R2STORAGE;
+      const publicDomain = runtime.env.R2_PUBLIC_DOMAIN;
       
-      // Sanitize the filename to remove problematic characters
-      const sanitizedFileName = this.sanitizeFileName(fileName);
-      const uniqueFileName = `${timestamp}-${sanitizedFileName}`;
-      const key = `blog-posts/${uniqueFileName}`;
-
-      // Convert File to Uint8Array if needed
-      let fileBuffer: Uint8Array;
-      if (file instanceof File) {
-        const arrayBuffer = await file.arrayBuffer();
-        fileBuffer = new Uint8Array(arrayBuffer);
-      } else {
-        fileBuffer = file;
+      if (!publicDomain) {
+          return { success: false, error: 'Production environment missing R2_PUBLIC_DOMAIN.' };
       }
 
-      const command = new PutObjectCommand({
-        Bucket: this.bucketName,
-        Key: key,
-        Body: fileBuffer,
-        ContentType: contentType,
-        ACL: 'public-read', // Make files publicly accessible
-      });
+      try {
+        const key = this.generateUniqueKey(fileName);
+        await bucket.put(key, fileBody, { httpMetadata: { contentType } });
+        const publicUrl = `https://${publicDomain}/${key}`;
+        return { success: true, url: publicUrl };
+      } catch (error: any) {
+        console.error('R2 binding upload error:', error);
+        return { success: false, error: error.message };
+      }
+    }
 
-      await this.client.send(command);
-
-      // Return the public URL
-      const publicUrl = `https://${process.env.R2_PUBLIC_DOMAIN || `pub-${process.env.R2_ACCOUNT_ID}.r2.dev`}/${key}`;
-
-      return {
-        success: true,
-        url: publicUrl,
-      };
-    } catch (error) {
-      console.error('R2 upload error:', error);
-      console.error('Error details:', {
-        code: error.code,
-        message: error.message,
-        stack: error.stack,
-        name: error.name,
-        $metadata: error.$metadata,
-        $response: error.$response,
-        cause: error.cause,
-        requestId: error.$metadata?.requestId,
-        httpStatusCode: error.$metadata?.httpStatusCode,
-      });
-      
-      // Log the raw response if available
-      if (error.$response) {
-        console.error('Raw response:', {
-          statusCode: error.$response.statusCode,
-          headers: error.$response.headers,
-          body: error.$response.body,
+    // --- Local Development Path (using S3 Client) ---
+    if (this.isLocalDev && this.s3Client && this.localConfig) {
+      try {
+        const key = this.generateUniqueKey(fileName);
+        const command = new PutObjectCommand({
+          Bucket: this.localConfig.bucketName,
+          Key: key,
+          Body: new Uint8Array(fileBody),
+          ContentType: contentType,
+          ACL: 'public-read',
         });
+
+        await this.s3Client.send(command);
+        const publicUrl = `https://${this.localConfig.publicDomain}/${key}`;
+        return { success: true, url: publicUrl };
+      } catch (error: any) {
+        console.error('Local R2 upload error:', error);
+        return { success: false, error: error.message };
       }
-      
-      // Extract more detailed error information
-      let errorMessage = error instanceof Error ? error.message : 'Unknown upload error';
-      
-      if (error.code) {
-        errorMessage = `${error.code}: ${errorMessage}`;
-      }
-      
-      if (error.name === 'NetworkError' || error.message?.includes('Network connection lost')) {
-        errorMessage = `Network connectivity issue: ${errorMessage}. Please check your R2 configuration and network connection.`;
-      }
-      
-      return {
-        success: false,
-        error: errorMessage,
-      };
     }
+
+    // --- Error Path ---
+    return {
+      success: false,
+      error: 'R2 service is not configured for either production or local development.',
+    };
+  }
+  
+  private generateUniqueKey(fileName: string): string {
+      const timestamp = Date.now();
+      const sanitizedFileName = this.sanitizeFileName(fileName);
+      return `blog-posts/${timestamp}-${sanitizedFileName}`;
   }
 
+  // sanitizeFileName and validateFile methods remain the same
   sanitizeFileName(fileName: string): string {
-    // Remove or replace problematic characters
     return fileName
-      .replace(/[,\s]/g, '_') // Replace commas and spaces with underscores
-      .replace(/[^a-zA-Z0-9._-]/g, '') // Remove any other special characters except dots, underscores, and hyphens
-      .replace(/_{2,}/g, '_') // Replace multiple consecutive underscores with single underscore
-      .replace(/^_+|_+$/g, ''); // Remove leading/trailing underscores
+      .replace(/[,\s]/g, '_')
+      .replace(/[^a-zA-Z0-9._-]/g, '')
+      .replace(/_{2,}/g, '_')
+      .replace(/^_+|_+$/g, '');
   }
 
   validateFile(file: File): { valid: boolean; error?: string } {
-    // Check file size (max 50MB)
     const maxSize = 50 * 1024 * 1024; // 50MB
     if (file.size > maxSize) {
       return { valid: false, error: 'File size must be less than 50MB' };
     }
-
-    // Check file type
     const allowedTypes = [
-      'image/jpeg',
-      'image/jpg',
-      'image/png',
-      'image/gif',
-      'image/webp',
-      'video/mp4',
-      'video/webm',
-      'video/ogg',
-      'video/quicktime',
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+      'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime',
     ];
-
     if (!allowedTypes.includes(file.type)) {
-      return {
-        valid: false,
-        error: 'File type not supported. Please upload images (JPEG, PNG, GIF, WebP) or videos (MP4, WebM, OGG, MOV)',
-      };
+      return { valid: false, error: 'File type not supported.' };
     }
-
     return { valid: true };
   }
-
-
 }
 
 export const r2UploadService = new R2UploadService();
