@@ -1,6 +1,6 @@
 import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 // ! always comment this out before pushing to prod
-// import 'dotenv/config';
+import 'dotenv/config';
 
 interface UploadResult {
   success: boolean;
@@ -29,6 +29,10 @@ export class R2UploadService {
         secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
       },
       forcePathStyle: true, // Required for R2
+      maxAttempts: 3, // Retry failed requests
+      requestHandler: {
+        requestTimeout: 30000, // 30 second timeout
+      },
     });
   }
 
@@ -78,10 +82,37 @@ export class R2UploadService {
         code: error.code,
         message: error.message,
         stack: error.stack,
+        name: error.name,
+        $metadata: error.$metadata,
+        $response: error.$response,
+        cause: error.cause,
+        requestId: error.$metadata?.requestId,
+        httpStatusCode: error.$metadata?.httpStatusCode,
       });
+      
+      // Log the raw response if available
+      if (error.$response) {
+        console.error('Raw response:', {
+          statusCode: error.$response.statusCode,
+          headers: error.$response.headers,
+          body: error.$response.body,
+        });
+      }
+      
+      // Extract more detailed error information
+      let errorMessage = error instanceof Error ? error.message : 'Unknown upload error';
+      
+      if (error.code) {
+        errorMessage = `${error.code}: ${errorMessage}`;
+      }
+      
+      if (error.name === 'NetworkError' || error.message?.includes('Network connection lost')) {
+        errorMessage = `Network connectivity issue: ${errorMessage}. Please check your R2 configuration and network connection.`;
+      }
+      
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown upload error',
+        error: errorMessage,
       };
     }
   }

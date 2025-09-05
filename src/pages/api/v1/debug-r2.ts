@@ -1,5 +1,5 @@
 import type { APIRoute } from 'astro';
-import { S3Client, ListBucketsCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, ListBucketsCommand } from '@aws-sdk/client-s3';
 
 export const GET: APIRoute = async () => {
   try {
@@ -12,7 +12,9 @@ export const GET: APIRoute = async () => {
       publicDomain: process.env.R2_PUBLIC_DOMAIN,
     };
 
-    // Test R2 connection
+    console.log('R2 Debug - Environment check:', config);
+
+    // Test R2 connection with enhanced configuration
     const client = new S3Client({
       region: 'auto',
       endpoint: `https://${process.env.R2_ACCOUNT_ID}.r2.cloudflarestorage.com`,
@@ -21,21 +23,48 @@ export const GET: APIRoute = async () => {
         secretAccessKey: process.env.R2_SECRET_ACCESS_KEY || '',
       },
       forcePathStyle: true,
+      maxAttempts: 3,
+      requestHandler: {
+        requestTimeout: 30000,
+      },
     });
+
+    console.log('R2 Debug - Client created successfully');
 
     // Try to list buckets (this will test the connection)
     const command = new ListBucketsCommand({});
+    console.log('R2 Debug - Attempting to list buckets...');
     const result = await client.send(command);
+    console.log('R2 Debug - List buckets successful:', result);
+
+    // Try a simple upload test
+    const testContent = new Uint8Array([72, 101, 108, 108, 111]); // "Hello" in bytes
+    const testKey = `test-${Date.now()}.txt`;
+    
+    console.log('R2 Debug - Attempting test upload...');
+    const uploadCommand = new PutObjectCommand({
+      Bucket: process.env.R2_BUCKET_NAME || 'sonicjs-media',
+      Key: testKey,
+      Body: testContent,
+      ContentType: 'text/plain',
+    });
+    
+    const uploadResult = await client.send(uploadCommand);
+    console.log('R2 Debug - Test upload successful:', uploadResult);
 
     return new Response(
       JSON.stringify({
         success: true,
         config: {
           ...config,
-          secretAccessKey: '***hidden***', // Don't expose the secret
+          secretAccessKey: '***hidden***',
         },
         buckets: result.Buckets?.map(b => b.Name) || [],
-        message: 'R2 connection successful',
+        testUpload: {
+          key: testKey,
+          success: true,
+        },
+        message: 'R2 connection and upload test successful',
       }),
       {
         status: 200,
@@ -46,7 +75,15 @@ export const GET: APIRoute = async () => {
     );
 
   } catch (error) {
-    console.error('R2 test error:', error);
+    console.error('R2 Debug - Error:', error);
+    console.error('R2 Debug - Error details:', {
+      code: error.code,
+      message: error.message,
+      name: error.name,
+      $metadata: error.$metadata,
+      $response: error.$response,
+      cause: error.cause,
+    });
     
     return new Response(
       JSON.stringify({
@@ -55,6 +92,7 @@ export const GET: APIRoute = async () => {
         details: {
           code: error.code,
           name: error.name,
+          $metadata: error.$metadata,
         },
         config: {
           accountId: process.env.R2_ACCOUNT_ID ? 'Set' : 'Missing',
