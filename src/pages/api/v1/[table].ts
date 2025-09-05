@@ -186,8 +186,15 @@ export const POST: APIRoute = async (context) => {
   const isAdminAccountCreated =
     context.locals.runtime.env.isAdminAccountCreated ?? true;
   
+  // Debug logging
+  console.log("API Debug - User:", context.locals.user);
+  console.log("API Debug - Authorized:", authorized);
+  console.log("API Debug - isAdminAccountCreated:", isAdminAccountCreated);
+  console.log("API Debug - Table:", entry.route);
+  
   // Allow registration if no admin exists, or if authorized and admin exists
   if (isAdminAccountCreated && !authorized) {
+    console.log("API Debug - Returning 401: isAdminAccountCreated=true, authorized=false");
     return return401();
   }
 
