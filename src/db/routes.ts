@@ -168,32 +168,41 @@ export interface ApiConfig {
     [field: string]:
       | {
           type: "id" | "string[]";
+          hint?: string;
         }
       | {
           type: "textField";
+          hint?: string;
         }
         | {
           type: "textArea";
+          hint?: string;
         }
       | {
           type: "auto" | "string[]";
+          hint?: string;
         }
       | {
           type: "file" | "file[]";
           bucket: (ctx: AppContext) => any;
           path?: string | ((ctx: AppContext) => string);
+          hint?: string;
         }
       | {
           type: "password";
+          hint?: string;
         }
       | {
           type: "ckeditor";
+          hint?: string;
         }
       | {
           type: "quill";
+          hint?: string;
         }
       | {
           type: "datetime";
+          hint?: string;
         };
   };
 }

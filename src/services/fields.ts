@@ -10,11 +10,12 @@ export const getFieldDefinitions = (tableConfig, record?) => {
     const key = field.config.name;
     const fieldOverride = tableConfig.fields ? tableConfig.fields[key] : null;
     const fieldType = fieldOverride ? fieldOverride.type : "textField";
+    const hint = fieldOverride ? fieldOverride.hint : null;
 
     if (record && record[key]) {
-      return { key, type: fieldType, value: record[key] };
+      return { key, type: fieldType, value: record[key], hint };
     } else {
-      return { key, type: fieldType };
+      return { key, type: fieldType, hint };
     }
   });
 

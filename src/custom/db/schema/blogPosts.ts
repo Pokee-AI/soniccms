@@ -205,24 +205,31 @@ export const fields: ApiConfig["fields"] = {
   },
   seoTitle: {
     type: "textField",
+    hint: "SEO-optimized title for the comparison post. Keep it under 60 characters and include the main comparison terms.",
   },
   slug: {
     type: "textField",
+    hint: "URL-friendly version of the title (e.g., 'pokee-ai-vs-competitor-comparison'). Use lowercase letters, numbers, and hyphens only.",
   },
   author: {
     type: "textField",
+    hint: "Name of the comparison author. This will be displayed publicly with the post.",
   },
   datePosted: {
     type: "datetime",
+    hint: "Publication date and time for the comparison post. This determines when it appears in chronological listings.",
   },
   summary: {
     type: "textArea",
+    hint: "Brief summary of the comparison. This appears in post listings and social media previews.",
   },
   introFraming: {
     type: "textArea",
+    hint: "Introduction that frames the comparison and explains why this comparison matters to readers.",
   },
   useCaseContext: {
     type: "textArea",
+    hint: "Describe the specific use cases or scenarios where this comparison is most relevant.",
   },
   promptText: {
     type: "textArea",

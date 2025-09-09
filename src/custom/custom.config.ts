@@ -1,7 +1,9 @@
 import * as blogPosts from "@custom/db/schema/blogPosts";
+import * as generalPost from "@custom/db/schema/generalPost";
 
 export const tableSchemas = {
     blogPosts,
+    generalPost,
     users, // Core table schema DO NOT REMOVE
     userSessions, // Core table schema DO NOT REMOVE
     cacheRequests, // Core table schema DO NOT REMOVE
@@ -13,6 +15,12 @@ export const {
     table: blogPostsTable,
     relation: blogPostsRelation,
 } = blogPosts;
+
+// Export all constants from generalPost
+export const {
+    table: generalPostTable,
+    relation: generalPostRelation,
+} = generalPost;
 
 // Core table schemas DO NOT EDIT BELOW THIS LINE
 
