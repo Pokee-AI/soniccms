@@ -189,6 +189,6 @@ export const fields: ApiConfig["fields"] = {
   // Status field - moved to the end
   status: {
     type: "textField",
-    hint: "Post status: 'draft' (not visible to public), 'published' (visible to everyone), or 'archived' (hidden but preserved).",
+    hint: "Post status: 'draft' (not visible to public), 'published' (visible to everyone).",
   },
 };
