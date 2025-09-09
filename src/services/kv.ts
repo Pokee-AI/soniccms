@@ -1,6 +1,6 @@
 export const kvPut = async (context, key, value, options = {}) => {
   try {
-    // let value = await context.locals.runtime.env.KV.put('test', JSON.stringify(blogPosts));
+    // let value = await context.locals.runtime.env.KV.put('test', JSON.stringify(comparisonPosts));
     console.log("adding to kv", key);
     const now = new Date().getTime();
     await context.locals.runtime.env.KV.put(key, JSON.stringify(value), {

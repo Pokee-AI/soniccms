@@ -2,7 +2,7 @@ import { return200 } from "@services/return-types";
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async (context) => {
-    const blogPosts = [
+    const comparisonPosts = [
         { id: 1, title: 'First Blog Post', content: 'This is the content of the first blog post.' },
         { id: 2, title: 'Second Blog Post', content: 'This is the content of the second blog post.' },
         { id: 3, title: 'Third Blog Post', content: 'This is the content of the third blog post.' },
@@ -15,9 +15,9 @@ export const GET: APIRoute = async (context) => {
         { id: 10, title: 'Tenth Blog Post', content: 'This is the content of the tenth blog post.' },
     ];
 
-    return return200(blogPosts);
+    return return200(comparisonPosts);
 
-    // return new Response(JSON.stringify(blogPosts), {
+    // return new Response(JSON.stringify(comparisonPosts), {
     //     headers: {
     //         'Content-Type': 'application/json',
     //         'Access-Control-Allow-Origin': '*',

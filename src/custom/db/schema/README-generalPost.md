@@ -1,6 +1,6 @@
 # General Post Schema
 
-The `generalPost` schema is a simplified blog post schema designed for general-purpose content creation. It provides a flexible structure for creating blog posts without the complex comparison structure of the main `blogPosts` schema.
+The `generalPost` schema is a simplified blog post schema designed for general-purpose content creation. It provides a flexible structure for creating blog posts without the complex comparison structure of the main `comparisonPosts` schema.
 
 ## Key Features
 
