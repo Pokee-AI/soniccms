@@ -126,6 +126,7 @@ function Table({ tableConfig, token }) {
         // setConfirmDelete(false);
         //redirect to table
         if (result.success) {
+          // Force a hard refresh to bypass any browser cache
           window.location.href = `/admin/tables/${tableConfig.route}`;
         }
       })();
@@ -134,7 +135,15 @@ function Table({ tableConfig, token }) {
 
   const getData = (originPath) => {
       if (originPath) {
-        fetch(`${originPath}`).then(async (response) => {
+        // Add cache-busting parameter to ensure fresh data
+        const url = new URL(originPath, window.location.origin);
+        url.searchParams.set('_t', Date.now().toString());
+        
+        fetch(url.toString(), {
+          headers: {
+            'Cache-Control': 'no-cache'
+          }
+        }).then(async (response) => {
           const responseData: { data: any } = await response.json();
           setData(responseData.data);
           setLoading(false);
@@ -148,12 +157,12 @@ function Table({ tableConfig, token }) {
     if (id) {
       const path = `/api/v1/${tableConfig.route}/${id}`;
 
-
       try {
         const response = await fetch(path, {
           method: 'DELETE',
           headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
           }
         });
     

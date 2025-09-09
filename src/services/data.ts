@@ -24,6 +24,31 @@ import {
 } from "./d1-data";
 import { log, timerLog } from "../services/logger";
 
+// Helper function to clear KV cache for a specific table
+async function clearTableCache(kv, tableName) {
+  try {
+    // List all keys in the KV store
+    const list = await kv.list();
+    
+    // Filter keys that match the table's API endpoint pattern
+    const tableKeys = list.keys.filter(key => 
+      key.name.includes(`/api/v1/${tableName}`) || 
+      key.name.includes(`/api/v1/${tableName}?`)
+    );
+    
+    // Delete all matching keys
+    for (const key of tableKeys) {
+      await kv.delete(key.name);
+      console.log(`Cleared cache for key: ${key.name}`);
+    }
+    
+    console.log(`Cleared ${tableKeys.length} cache entries for table: ${tableName}`);
+  } catch (error) {
+    console.error("Error clearing table cache:", error);
+    throw error;
+  }
+}
+
 // export async function getRecordOld(d1, kv, id) {
 //   const cacheKey = addCachePrefix(id);
 //   const cacheResult = await getFromInMemoryCache(cacheKey);
@@ -265,6 +290,16 @@ export async function insertRecord(d1, kv, data) {
 
     }
 
+    // Clear KV cache for this table to ensure fresh data on next request
+    if (kv) {
+      try {
+        // Clear all cache entries for this table
+        await clearTableCache(kv, content.table);
+      } catch (cacheError) {
+        console.warn("Failed to clear cache after insert:", cacheError);
+      }
+    }
+
     return { status: 201, data: result };
   } catch (error) {
     error =
@@ -283,9 +318,16 @@ export async function updateRecord(d1, kv, data, params: Record<string, any>) {
     if ("id" in result && result.id) {
       //   await saveKVData(kv, data.id, data);
     }
-    //expire cache
-    // await setCacheStatusInvalid();
-    // await clearKVCache(kv);
+    
+    // Clear KV cache for this table to ensure fresh data on next request
+    if (kv) {
+      try {
+        await clearTableCache(kv, data.table);
+      } catch (cacheError) {
+        console.warn("Failed to clear cache after update:", cacheError);
+      }
+    }
+    
     return { code: 200, data: result };
   } catch (error) {
     console.log("error posting content", error);
@@ -294,9 +336,16 @@ export async function updateRecord(d1, kv, data, params: Record<string, any>) {
     //then also save the content to sqlite for filtering, sorting, etc
     try {
       const result = await updateD1Data(d1, data.table, data);
-      //expire cache
-      //   await setCacheStatusInvalid();
-      //   await clearKVCache(kv);
+      
+      // Clear KV cache for this table to ensure fresh data on next request
+      if (kv) {
+        try {
+          await clearTableCache(kv, data.table);
+        } catch (cacheError) {
+          console.warn("Failed to clear cache after update:", cacheError);
+        }
+      }
+      
       return { code: 200, data: result };
     } catch (error) {
       console.log("error posting content", error);
@@ -304,15 +353,22 @@ export async function updateRecord(d1, kv, data, params: Record<string, any>) {
   }
 }
 
-export async function deleteRecord(d1, data) : Promise<boolean | { code: number; message: string }> {
+export async function deleteRecord(d1, kv, data) : Promise<boolean | { code: number; message: string }> {
 
   try {
     // const kvResult = await deleteKVById(kv, data.id);
     const d1Result = await deleteD1ByTableAndId(d1, data.table, data.id);
 
+    // Clear KV cache for this table to ensure fresh data on next request
+    if (kv) {
+      try {
+        await clearTableCache(kv, data.table);
+      } catch (cacheError) {
+        console.warn("Failed to clear cache after delete:", cacheError);
+      }
+    }
+
     return d1Result;
-    // await setCacheStatusInvalid();
-    // await clearKVCache(kv);
   } catch (error) {
     console.log("error deleting content", error);
     return { code: 500, message: error };

@@ -4,6 +4,9 @@ const commonHeaders = {
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
   "Access-Control-Max-Age": "86400", // 24 hours
+  "Cache-Control": "no-cache, no-store, must-revalidate",
+  "Pragma": "no-cache",
+  "Expires": "0"
 };
 
 export const return200 = (data = {}) => {
