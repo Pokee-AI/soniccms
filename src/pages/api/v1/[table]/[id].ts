@@ -210,7 +210,7 @@ export const DELETE: APIRoute = async (context) => {
 
   const tableName = params.table;
 
-  let entry;
+  let entry: any;
   try {
     entry = apiConfig.filter((tbl) => tbl.route === tableName)[0];
   } catch (error) {
@@ -261,7 +261,7 @@ export const DELETE: APIRoute = async (context) => {
 
   if (record) {
     console.log("content found, deleting...");
-    const result = await deleteRecord(context.locals.runtime.env.D1, {
+    const result = await deleteRecord(context.locals.runtime.env.D1, context.locals.runtime.env.KV, {
       id,
       table: tableName,
     });
