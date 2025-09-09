@@ -227,7 +227,7 @@ export const POST: APIRoute = async (context) => {
       await entry.hooks.beforeOperation(content, "create", undefined, content);
     }
 
-    const result = await insertRecord(env.D1, {}, content);
+    const result = await insertRecord(env.D1, env.KV, content);
     console.log("create result", result);
 
     if (entry?.hooks?.afterOperation) {

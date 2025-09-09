@@ -64,7 +64,7 @@ export const login = async (
       // invalidate the otp so user can only use it once
       const updated = await updateRecord(
         context.locals.runtime.env.D1,
-        {},
+        context.locals.runtime.env.KV,
         {
           table: "users",
           id: user.id,
@@ -178,7 +178,7 @@ export const sendEmailConfirmation = async (context, email: string) => {
   } else if (user) {
     const updated = await updateRecord(
       context.locals.runtime.env.D1,
-      {},
+      context.locals.runtime.env.KV,
       {
         table: "users",
         id: user.id,
@@ -208,7 +208,7 @@ export const confirmEmail = async (context, code: string) => {
   }
   const updated = await updateRecord(
     context.locals.runtime.env.D1,
-    {},
+    context.locals.runtime.env.KV,
     {
       table: "users",
       id: user.id,

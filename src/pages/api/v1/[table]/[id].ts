@@ -182,7 +182,7 @@ export const PUT: APIRoute = async (context) => {
     delete params.table;
     const result = await updateRecord(
       context.locals.runtime.env.D1,
-      {},
+      context.locals.runtime.env.KV,
       content,
       params
     );

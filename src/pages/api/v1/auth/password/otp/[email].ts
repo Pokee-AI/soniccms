@@ -38,7 +38,7 @@ export const GET = async (context) => {
 
   const updated = await updateRecord(
     context.locals.runtime.env.D1,
-    {},
+    context.locals.runtime.env.KV,
     {
       table: "users",
       id: user.id,
