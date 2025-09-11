@@ -169,40 +169,49 @@ export interface ApiConfig {
       | {
           type: "id" | "string[]";
           hint?: string;
+          label?: string;
         }
       | {
           type: "textField";
           hint?: string;
+          label?: string;
         }
         | {
           type: "textArea";
           hint?: string;
+          label?: string;
         }
       | {
           type: "auto" | "string[]";
           hint?: string;
+          label?: string;
         }
       | {
           type: "file" | "file[]";
           bucket: (ctx: AppContext) => any;
           path?: string | ((ctx: AppContext) => string);
           hint?: string;
+          label?: string;
         }
       | {
           type: "password";
           hint?: string;
+          label?: string;
         }
       | {
           type: "ckeditor";
           hint?: string;
+          label?: string;
         }
       | {
           type: "quill";
           hint?: string;
+          label?: string;
         }
       | {
           type: "datetime";
           hint?: string;
+          label?: string;
         };
   };
 }

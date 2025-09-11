@@ -22,20 +22,20 @@ export const definition = {
   
   // Basic content fields
   author: text("author").notNull(),
+  tags: text("tags"), // Comma-separated tags
+  category: text("category"),
   summary: text("summary"),
+  introduction: text("introduction"),
   content: text("content"), // Main content area
   
   // SEO and metadata
   metaDescription: text("metaDescription"),
-  tags: text("tags"), // Comma-separated tags
-  category: text("category"),
   
   // Media fields - flexible for different types of content
   mediaUrls: text("mediaUrls"), // Comma-separated URLs for file uploads
   mediaCaptions: text("mediaCaptions"), // JSON array of media captions
   
   // Additional content sections - flexible text areas
-  introduction: text("introduction"),
   conclusion: text("conclusion"),
   
   // Status field - moved to the end
@@ -129,66 +129,80 @@ export const fields: ApiConfig["fields"] = {
   },
   seoTitle: {
     type: "textField",
+    label: "SEO Title",
     hint: "SEO-optimized title that will appear in search results and browser tabs. Keep it under 60 characters for best results.",
   },
   slug: {
     type: "textField",
+    label: "Slug",
     hint: "URL-friendly version of the title (e.g., 'my-awesome-post'). Use lowercase letters, numbers, and hyphens only. This will be the post's URL.",
   },
   author: {
     type: "textField",
+    label: "Author",
     hint: "Name of the post author. This will be displayed publicly with the post.",
   },
   datePosted: {
     type: "datetime",
+    label: "Publication Date",
     hint: "Publication date and time. This determines when the post appears in chronological listings.",
   },
   
   // Content fields
   summary: {
     type: "textArea",
-    hint: "Brief summary or excerpt of the post. This often appears in post listings and social media previews.",
+    label: "Summary",
+    hint: "Brief summary or excerpt of the post.",
   },
   content: {
     type: "textArea",
+    label: "Content",
     hint: "Main content of your post. Write your full article content here. You can use basic HTML formatting if needed.",
   },
   introduction: {
     type: "textArea",
+    label: "Introduction",
     hint: "Optional introduction section that appears before the main content. Use this to hook readers or provide context.",
   },
   conclusion: {
     type: "textArea",
+    label: "Conclusion",
     hint: "Optional conclusion section that appears after the main content. Use this to summarize key points or call for action.",
   },
   
   // SEO fields
   metaDescription: {
     type: "textArea",
+    label: "Meta Description",
     hint: "Meta description for search engines. This appears in search results under your title. Keep it between 150-160 characters.",
   },
   tags: {
     type: "textField",
+    label: "Tags",
     hint: "Comma-separated tags to categorize your post (e.g., 'technology, web development, tutorial'). These help with organization and discovery.",
   },
   category: {
     type: "textField",
+    label: "Category",
     hint: "Main category for this post (e.g., 'Technology', 'Lifestyle', 'News'). Helps organize content into broad topics.",
   },
   
   // Media fields
   mediaUrls: {
     type: "textField",
-    hint: "Upload images, videos, or other media files. Multiple files can be uploaded and will be stored as comma-separated URLs.",
+    label: "Media Files",
+    hint: "Upload images, videos, or other media files. Multiple files can be uploaded.",
   },
   mediaCaptions: {
     type: "textArea",
+    label: "Media Captions",
     hint: "JSON array of captions for the media URLs. Should match the order of mediaUrls. Format: [\"caption1\", \"caption2\", \"caption3\"]",
   },
   
   // Status field - moved to the end
   status: {
     type: "textField",
+    label: "Status",
     hint: "Post status: 'draft' (not visible to public), 'published' (visible to everyone).",
   },
 };

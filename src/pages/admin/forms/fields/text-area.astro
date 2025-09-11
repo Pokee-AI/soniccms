@@ -9,7 +9,7 @@ const { field } = Astro.props;
         for={field.key}
         class="block text-sm font-medium leading-6 text-white"
       >
-        {field.key}
+        {field.label || field.key}
       </label>
       <div class="mt-2">
         <textarea

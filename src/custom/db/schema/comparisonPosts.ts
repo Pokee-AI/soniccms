@@ -205,297 +205,386 @@ export const fields: ApiConfig["fields"] = {
   },
   seoTitle: {
     type: "textField",
+    label: "SEO Title",
     hint: "SEO-optimized title for the comparison post. Keep it under 60 characters and include the main comparison terms.",
   },
   slug: {
     type: "textField",
+    label: "Slug",
     hint: "URL-friendly version of the title (e.g., 'pokee-ai-vs-competitor-comparison'). Use lowercase letters, numbers, and hyphens only.",
   },
   author: {
     type: "textField",
+    label: "Author",
     hint: "Name of the comparison author. This will be displayed publicly with the post.",
   },
   datePosted: {
     type: "datetime",
+    label: "Publication Date",
     hint: "Publication date and time for the comparison post. This determines when it appears in chronological listings.",
   },
   summary: {
     type: "textArea",
+    label: "Summary",
     hint: "Brief summary of the comparison. This appears in post listings and social media previews.",
   },
   introFraming: {
     type: "textArea",
+    label: "Introduction Framing",
     hint: "Introduction that frames the comparison and explains why this comparison matters to readers.",
   },
   useCaseContext: {
     type: "textArea",
+    label: "Use Case Context",
     hint: "Describe the specific use cases or scenarios where this comparison is most relevant.",
   },
   promptText: {
     type: "textArea",
+    label: "Prompt Text",
   },
   promptAnalysis: {
     type: "textArea",
+    label: "Prompt Analysis",
   },
   
   // PokeeAI fields
   pokeeAiName: {
     type: "textField",
+    label: "PokeeAI Name",
   },
   pokeeAiAnalysis: {
     type: "textArea",
+    label: "PokeeAI Analysis",
   },
   pokeeAiMediaUrls: {
     type: "textField",
+    label: "PokeeAI Media Files",
   },
   pokeeAiMediaCaptions: {
     type: "textArea",
+    label: "PokeeAI Media Captions",
   },
   
   // PokeeAI performance metrics
   pokeeAiMetric1: {
     type: "textField",
+    label: "PokeeAI Metric 1",
   },
   pokeeAiValue1: {
     type: "textField",
+    label: "PokeeAI Value 1",
   },
   pokeeAiSource1: {
     type: "textField",
+    label: "PokeeAI Source 1",
   },
   pokeeAiMetric2: {
     type: "textField",
+    label: "PokeeAI Metric 2",
   },
   pokeeAiValue2: {
     type: "textField",
+    label: "PokeeAI Value 2",
   },
   pokeeAiSource2: {
     type: "textField",
+    label: "PokeeAI Source 2",
   },
   pokeeAiMetric3: {
     type: "textField",
+    label: "PokeeAI Metric 3",
   },
   pokeeAiValue3: {
     type: "textField",
+    label: "PokeeAI Value 3",
   },
   pokeeAiSource3: {
     type: "textField",
+    label: "PokeeAI Source 3",
   },
   
   // Competitor fields
   competitor1Name: {
     type: "textField",
+    label: "Competitor 1 Name",
   },
   competitor1Analysis: {
     type: "textArea",
+    label: "Competitor 1 Analysis",
   },
   competitor1MediaUrls: {
     type: "textField",
+    label: "Competitor 1 Media Files",
   },
   competitor1MediaCaptions: {
     type: "textArea",
+    label: "Competitor 1 Media Captions",
   },
   
   // Competitor 1 performance metrics
   competitor1Metric1: {
     type: "textField",
+    label: "Competitor 1 Metric 1",
   },
   competitor1Value1: {
     type: "textField",
+    label: "Competitor 1 Value 1",
   },
   competitor1Source1: {
     type: "textField",
+    label: "Competitor 1 Source 1",
   },
   competitor1Metric2: {
     type: "textField",
+    label: "Competitor 1 Metric 2",
   },
   competitor1Value2: {
     type: "textField",
+    label: "Competitor 1 Value 2",
   },
   competitor1Source2: {
     type: "textField",
+    label: "Competitor 1 Source 2",
   },
   competitor1Metric3: {
     type: "textField",
+    label: "Competitor 1 Metric 3",
   },
   competitor1Value3: {
     type: "textField",
+    label: "Competitor 1 Value 3",
   },
   competitor1Source3: {
     type: "textField",
+    label: "Competitor 1 Source 3",
   },
   
   competitor2Name: {
     type: "textField",
+    label: "Competitor 2 Name",
   },
   competitor2Analysis: {
     type: "textArea",
+    label: "Competitor 2 Analysis",
   },
   competitor2MediaUrls: {
     type: "textField",
+    label: "Competitor 2 Media Files",
   },
   competitor2MediaCaptions: {
     type: "textArea",
+    label: "Competitor 2 Media Captions",
   },
   
   // Competitor 2 performance metrics
   competitor2Metric1: {
     type: "textField",
+    label: "Competitor 2 Metric 1",
   },
   competitor2Value1: {
     type: "textField",
+    label: "Competitor 2 Value 1",
   },
   competitor2Source1: {
     type: "textField",
+    label: "Competitor 2 Source 1",
   },
   competitor2Metric2: {
     type: "textField",
+    label: "Competitor 2 Metric 2",
   },
   competitor2Value2: {
     type: "textField",
+    label: "Competitor 2 Value 2",
   },
   competitor2Source2: {
     type: "textField",
+    label: "Competitor 2 Source 2",
   },
   competitor2Metric3: {
     type: "textField",
+    label: "Competitor 2 Metric 3",
   },
   competitor2Value3: {
     type: "textField",
+    label: "Competitor 2 Value 3",
   },
   competitor2Source3: {
     type: "textField",
+    label: "Competitor 2 Source 3",
   },
   
   competitor3Name: {
     type: "textField",
+    label: "Competitor 3 Name",
   },
   competitor3Analysis: {
     type: "textArea",
+    label: "Competitor 3 Analysis",
   },
   competitor3MediaUrls: {
     type: "textField",
+    label: "Competitor 3 Media Files",
   },
   competitor3MediaCaptions: {
     type: "textArea",
+    label: "Competitor 3 Media Captions",
   },
   
   // Competitor 3 performance metrics
   competitor3Metric1: {
     type: "textField",
+    label: "Competitor 3 Metric 1",
   },
   competitor3Value1: {
     type: "textField",
+    label: "Competitor 3 Value 1",
   },
   competitor3Source1: {
     type: "textField",
+    label: "Competitor 3 Source 1",
   },
   competitor3Metric2: {
     type: "textField",
+    label: "Competitor 3 Metric 2",
   },
   competitor3Value2: {
     type: "textField",
+    label: "Competitor 3 Value 2",
   },
   competitor3Source2: {
     type: "textField",
+    label: "Competitor 3 Source 2",
   },
   competitor3Metric3: {
     type: "textField",
+    label: "Competitor 3 Metric 3",
   },
   competitor3Value3: {
     type: "textField",
+    label: "Competitor 3 Value 3",
   },
   competitor3Source3: {
     type: "textField",
+    label: "Competitor 3 Source 3",
   },
   
   conclusion: {
     type: "textArea",
+    label: "Conclusion",
   },
   
   // Key takeaways fields
   keyTakeaway1: {
     type: "textField",
+    label: "Key Takeaway 1",
   },
   keyTakeaway2: {
     type: "textField",
+    label: "Key Takeaway 2",
   },
   keyTakeaway3: {
     type: "textField",
+    label: "Key Takeaway 3",
   },
   keyTakeaway4: {
     type: "textField",
+    label: "Key Takeaway 4",
   },
   keyTakeaway5: {
     type: "textField",
+    label: "Key Takeaway 5",
   },
   
   // FAQ fields
   faq1Question: {
     type: "textField",
+    label: "FAQ 1 Question",
   },
   faq1Answer: {
     type: "textArea",
+    label: "FAQ 1 Answer",
   },
   faq2Question: {
     type: "textField",
+    label: "FAQ 2 Question",
   },
   faq2Answer: {
     type: "textArea",
+    label: "FAQ 2 Answer",
   },
   faq3Question: {
     type: "textField",
+    label: "FAQ 3 Question",
   },
   faq3Answer: {
     type: "textArea",
+    label: "FAQ 3 Answer",
   },
   faq4Question: {
     type: "textField",
+    label: "FAQ 4 Question",
   },
   faq4Answer: {
     type: "textArea",
+    label: "FAQ 4 Answer",
   },
   faq5Question: {
     type: "textField",
+    label: "FAQ 5 Question",
   },
   faq5Answer: {
     type: "textArea",
+    label: "FAQ 5 Answer",
   },
   faq6Question: {
     type: "textField",
+    label: "FAQ 6 Question",
   },
   faq6Answer: {
     type: "textArea",
+    label: "FAQ 6 Answer",
   },
   faq7Question: {
     type: "textField",
+    label: "FAQ 7 Question",
   },
   faq7Answer: {
     type: "textArea",
+    label: "FAQ 7 Answer",
   },
   faq8Question: {
     type: "textField",
+    label: "FAQ 8 Question",
   },
   faq8Answer: {
     type: "textArea",
+    label: "FAQ 8 Answer",
   },
   faq9Question: {
     type: "textField",
+    label: "FAQ 9 Question",
   },
   faq9Answer: {
     type: "textArea",
+    label: "FAQ 9 Answer",
   },
   faq10Question: {
     type: "textField",
+    label: "FAQ 10 Question",
   },
   faq10Answer: {
     type: "textArea",
+    label: "FAQ 10 Answer",
   },
   
   relatedComparisons: {
     type: "textArea",
+    label: "Related Comparisons",
   },
   status: {
     type: "textField",
+    label: "Status",
   },
 };
 

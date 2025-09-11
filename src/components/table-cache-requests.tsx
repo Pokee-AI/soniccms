@@ -64,7 +64,7 @@ function TableCacheRequests({ tableConfig }) {
   // );
   const columns = tableConfig.formFields.map((formField) => {
     return columnHelper.accessor(formField.key, {
-      header: formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
+      header: formField.label || formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
       cell: (info) => {
         switch (formField.key) {
           case "id":

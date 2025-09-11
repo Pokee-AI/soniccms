@@ -52,7 +52,7 @@ function Table({ tableConfig, token }) {
   // );
   const columns = tableConfig.formFields.map((formField) => {
     return columnHelper.accessor(formField.key, {
-      header: formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
+      header: formField.label || formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
       cell: (info) =>
         formField.key === "id"
           ? truncateText(info.getValue(), 5)

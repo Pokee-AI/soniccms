@@ -14,7 +14,7 @@ const currentValue = record?.[field.key] || '';
 
 <div class="mt-4">
   <label class="block text-sm font-medium text-white">
-    {field.key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
+    {field.label || field.key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase())}
   </label>
   
   <!-- File Input -->
@@ -55,6 +55,13 @@ const currentValue = record?.[field.key] || '';
   <div id={`existing-files-${field.key}`} class="mt-4">
     <!-- Files will be displayed here -->
   </div>
+  
+  <!-- Hint Display -->
+  {field.hint && (
+    <p class="mt-2 text-sm text-gray-400">
+      {field.hint}
+    </p>
+  )}
 </div>
 
 <script define:vars={{ fieldKey: field.key }}>
