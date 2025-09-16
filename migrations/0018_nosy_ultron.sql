@@ -1,0 +1,1 @@
+ALTER TABLE `generalPost` RENAME COLUMN "coverMediaUrls" TO "coverMediaUrl";
