@@ -17,6 +17,7 @@ export const definition = {
   
   // Required SEO fields
   seoTitle: text("seoTitle").notNull(),
+  coverMediaUrls: text("coverMediaUrls"), // Cover image for the blog post
   slug: text("slug").notNull().unique(),
   datePosted: integer("datePosted").notNull(), // Unix timestamp
   
@@ -131,6 +132,11 @@ export const fields: ApiConfig["fields"] = {
     type: "textField",
     label: "SEO Title",
     hint: "SEO-optimized title that will appear in search results and browser tabs. Keep it under 60 characters for best results.",
+  },
+  coverMediaUrls: {
+    type: "textField",
+    label: "Cover Image",
+    hint: "Upload a cover image for your blog post. This will be displayed prominently at the top of the post and in post listings.",
   },
   slug: {
     type: "textField",

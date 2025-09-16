@@ -24,7 +24,7 @@ const tableConfig = getFieldDefinitions(tableConfigRecord, record);
           {
             tableConfig.formFields.map((field) => (
               <div class="mt-4">
-                {((field.key.includes('MediaUrls') || field.key === 'mediaUrls') && field.type === "textField") ? (
+                {((field.key.includes('MediaUrls') || field.key === 'mediaUrls' || field.key === 'coverMediaUrls') && field.type === "textField") ? (
                   <FileUploadField field={field} record={record} />
                 ) : field.type === "textArea" ? (
                   <TextArea field={field} />
