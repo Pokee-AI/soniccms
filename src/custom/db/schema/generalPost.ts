@@ -1,7 +1,7 @@
 import { relations } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 import { auditSchema } from "@schema/audit";
-import { isAdminOrEditor, isAdminOrUser, isAdmin } from "../../../db/config-helpers";
+import { isAdminOrEditor, isAdminOrUser, isAdmin, isAdminOrEditorOrApiKey } from "../../../db/config-helpers";
 import type { ApiConfig } from "../../../db/routes";
 
 export const tableName = "generalPost";
@@ -66,8 +66,8 @@ export const relation = relations(table, ({ }) => ({
 export const access: ApiConfig["access"] = {
   operation: {
     read: true,           // Public read access
-    create: isAdminOrEditor,  // Only admins/editors can create
-    update: isAdminOrEditor,  // Only admins/editors can update
+    create: isAdminOrEditorOrApiKey,  // Admins/editors or API key can create
+    update: isAdminOrEditorOrApiKey,  // Admins/editors or API key can update
     delete: isAdmin,      // Only admins can delete
   },
   fields: {
@@ -82,11 +82,11 @@ export const access: ApiConfig["access"] = {
     },
     updatedOn: {
       read: true,
-      update: isAdminOrEditor,  // Only admins/editors can modify
+      update: isAdminOrEditorOrApiKey,  // Admins/editors or API key can modify
     },
     status: {
       read: true,
-      update: isAdminOrEditor,  // Publishing status control
+      update: isAdminOrEditorOrApiKey,  // Publishing status control
     }
   },
 };
@@ -131,12 +131,12 @@ export const fields: ApiConfig["fields"] = {
   seoTitle: {
     type: "textField",
     label: "SEO Title",
-    hint: "SEO-optimized title that will appear in search results and browser tabs. Keep it under 60 characters for best results.",
+    hint: "Title that will appear in search results and browser tabs. Keep it under 60 characters for best results.",
   },
   coverMediaUrl: {
     type: "textField",
     label: "Cover Image",
-    hint: "Upload a single cover image for your blog post. Only one image is allowed. This will be displayed prominently at the top of the post and in post listings.",
+    hint: "The cover iamge. Only one image is allowed. This will be displayed prominently at the top of the post and in post listings.",
   },
   slug: {
     type: "textField",

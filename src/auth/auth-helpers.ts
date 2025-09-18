@@ -348,3 +348,35 @@ export async function filterUpdateFieldAccess<D = any>(
   }
   return result;
 }
+
+// API Key Authentication Functions
+export function validateApiKey(ctx: AppContext): boolean {
+  const apiKey = ctx.request.headers.get('x-api-key') || ctx.request.headers.get('authorization')?.replace('Bearer ', '');
+  const expectedApiKey = ctx.locals.runtime.env.API_KEY;
+  
+  console.log("🔑 API Key Debug:");
+  console.log("🔑 Received API Key:", apiKey ? `${apiKey.substring(0, 8)}...` : 'none');
+  console.log("🔑 Expected API Key:", expectedApiKey ? `${String(expectedApiKey).substring(0, 8)}...` : 'none');
+  console.log("🔑 Keys match:", apiKey === expectedApiKey);
+  
+  if (!apiKey || !expectedApiKey) {
+    console.log("🔑 Missing API key or expected key");
+    return false;
+  }
+  
+  return apiKey === expectedApiKey;
+}
+
+export function isApiKeyAuthenticated(ctx: AppContext): boolean {
+  return validateApiKey(ctx);
+}
+
+export function isSessionOrApiKeyAuthenticated(ctx: AppContext): boolean {
+  // Check if user is authenticated via session
+  const hasValidSession = ctx.locals.user && ctx.locals.session;
+  
+  // Check if request is authenticated via API key
+  const hasValidApiKey = isApiKeyAuthenticated(ctx);
+  
+  return hasValidSession || hasValidApiKey;
+}

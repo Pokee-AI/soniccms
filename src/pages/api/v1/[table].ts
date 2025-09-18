@@ -10,6 +10,7 @@ import {
   getApiAccessControlResult,
   getItemReadResult,
   getOperationCreateResult,
+  isApiKeyAuthenticated,
 } from "../../../auth/auth-helpers";
 import { deleteRecord, getRecords, insertRecord } from "../../../services/data";
 import {
@@ -189,6 +190,10 @@ export const POST: APIRoute = async (context) => {
   console.log("🔍 API Debug - Table:", entry.route);
   console.log("🔍 API Debug - Content data keys:", Object.keys(content.data));
   
+  // Check if request is authenticated via API key
+  const isApiKeyAuth = isApiKeyAuthenticated(context);
+  console.log("🔍 API Debug - API Key Auth:", isApiKeyAuth);
+  
   let authorized = await getOperationCreateResult(
     entry?.access?.operation?.create,
     context,
@@ -200,9 +205,12 @@ export const POST: APIRoute = async (context) => {
   console.log("🔍 API Debug - Authorized:", authorized);
   console.log("🔍 API Debug - isAdminAccountCreated:", isAdminAccountCreated);
   
-  // Allow registration if no admin exists, or if authorized and admin exists
-  if (isAdminAccountCreated && !authorized) {
-    console.log("🔍 API Debug - Returning 401: isAdminAccountCreated=true, authorized=false");
+  // Allow creation if:
+  // 1. No admin account exists yet (first setup)
+  // 2. User is authorized via session (admin/editor)
+  // 3. Request is authenticated via API key
+  if (isAdminAccountCreated && !authorized && !isApiKeyAuth) {
+    console.log("🔍 API Debug - Returning 401: isAdminAccountCreated=true, authorized=false, apiKeyAuth=false");
     console.log("🔍🔍🔍 API DEBUG END (401) 🔍🔍🔍");
     return return401();
   }
