@@ -202,7 +202,7 @@ export const fields: ApiConfig["fields"] = {
   mediaCaptions: {
     type: "textArea",
     label: "Media Captions",
-    hint: "JSON array of captions for the media URLs. Should match the order of mediaUrls. Format: [\"caption1\", \"caption2\", \"caption3\"]",
+    hint: "JSON array of captions for the media URLs. Should match the order of media files. Format: [\"caption1\", \"caption2\", \"caption3\"]",
   },
   
   // Status field - moved to the end
