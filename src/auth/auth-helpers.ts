@@ -354,13 +354,7 @@ export function validateApiKey(ctx: AppContext): boolean {
   const apiKey = ctx.request.headers.get('x-api-key') || ctx.request.headers.get('authorization')?.replace('Bearer ', '');
   const expectedApiKey = ctx.locals.runtime.env.API_KEY;
   
-  console.log("🔑 API Key Debug:");
-  console.log("🔑 Received API Key:", apiKey ? `${apiKey.substring(0, 8)}...` : 'none');
-  console.log("🔑 Expected API Key:", expectedApiKey ? `${String(expectedApiKey).substring(0, 8)}...` : 'none');
-  console.log("🔑 Keys match:", apiKey === expectedApiKey);
-  
   if (!apiKey || !expectedApiKey) {
-    console.log("🔑 Missing API key or expected key");
     return false;
   }
   

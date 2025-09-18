@@ -9,7 +9,8 @@ export const GET: APIRoute = async (context) => {
     expectedApiKey: expectedApiKey ? `${String(expectedApiKey).substring(0, 8)}...` : 'none',
     apiKeyMatch: apiKey === expectedApiKey,
     hasApiKey: !!apiKey,
-    hasExpectedApiKey: !!expectedApiKey
+    hasExpectedApiKey: !!expectedApiKey,
+    allEnvVars: Object.keys(context.locals.runtime.env)
   }), {
     status: 200,
     headers: {
