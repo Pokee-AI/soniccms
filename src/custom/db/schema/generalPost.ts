@@ -111,6 +111,11 @@ export const hooks: ApiConfig["hooks"] = {
         data.content = "Write your content here...";
       }
       
+      // Set default status to 'draft' if not provided or empty
+      if (!data.status || data.status.trim() === "") {
+        data.status = "draft";
+      }
+      
       return data;
     },
     update: (ctx, id, data) => {
