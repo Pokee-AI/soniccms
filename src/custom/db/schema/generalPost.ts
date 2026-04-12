@@ -39,6 +39,9 @@ export const definition = {
   // Additional content sections - flexible text areas
   conclusion: text("conclusion"),
   
+  // Comparison post fields
+  competitorName: text("competitorName"), // Optional: competitor name for comparison posts (e.g., "Make.com", "Lovable")
+
   // Status field - moved to the end
   status: text("status").$type<"draft" | "published" | "archived">().default("draft"),
 };
@@ -210,6 +213,13 @@ export const fields: ApiConfig["fields"] = {
     hint: "JSON array of captions for the media URLs. Should match the order of media files. Format: [\"caption1\", \"caption2\", \"caption3\"]",
   },
   
+  // Comparison post fields
+  competitorName: {
+    type: "textField",
+    label: "Competitor Name",
+    hint: "Optional. For comparison posts, the name of the competitor being compared (e.g., 'Make.com', 'Lovable'). Used to display the competitor icon on the blog card.",
+  },
+
   // Status field - moved to the end
   status: {
     type: "textField",
