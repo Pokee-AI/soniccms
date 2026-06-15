@@ -42,6 +42,12 @@ export const definition = {
   // Comparison post fields
   competitorName: text("competitorName"), // Optional: competitor name for comparison posts (e.g., "Make.com", "Lovable")
 
+  // Integration post fields
+  integrationName: text("integrationName"), // Optional: integration/service name for integration posts (e.g., "Gmail", "Slack")
+
+  // Card display fields
+  hook: text("hook"), // Optional: short teaser text shown on blog cards instead of summary (1-2 sentences)
+
   // Status field - moved to the end
   status: text("status").$type<"draft" | "published" | "archived">().default("draft"),
 };
@@ -196,9 +202,10 @@ export const fields: ApiConfig["fields"] = {
     hint: "Comma-separated tags to categorize your post (e.g., 'technology, web development, tutorial'). These help with organization and discovery.",
   },
   category: {
-    type: "textField",
+    type: "select",
     label: "Category",
-    hint: "Main category for this post (e.g., 'Technology', 'Lifestyle', 'News'). Helps organize content into broad topics.",
+    options: ["Insights", "Integrations", "Use Cases"],
+    hint: "Which blog tab this post appears under. 'Integrations' and 'Use Cases' have their own tabs; anything else shows under Insights. (Comparisons are detected automatically when you fill in 'Competitor Name'.)",
   },
   
   // Media fields
@@ -220,10 +227,25 @@ export const fields: ApiConfig["fields"] = {
     hint: "Optional. For comparison posts, the name of the competitor being compared (e.g., 'Make.com', 'Lovable'). Used to display the competitor icon on the blog card.",
   },
 
+  // Integration post fields
+  integrationName: {
+    type: "textField",
+    label: "Integration Name",
+    hint: "Optional. For integration posts, the service name (e.g., 'Gmail', 'Slack', 'HubSpot'). Used to display the integration icon on the blog card.",
+  },
+
+  // Card display fields
+  hook: {
+    type: "textArea",
+    label: "Hook",
+    hint: "Optional. Short teaser text (1-2 sentences) shown on blog cards instead of summary. Keep it punchy and action-oriented.",
+  },
+
   // Status field - moved to the end
   status: {
-    type: "textField",
+    type: "select",
     label: "Status",
-    hint: "Post status: 'draft' (not visible to public), 'published' (visible to everyone).",
+    options: ["draft", "published", "archived"],
+    hint: "draft = not visible to the public (use Preview to see it). published = live on the blog. archived = hidden.",
   },
 };

@@ -212,6 +212,14 @@ export interface ApiConfig {
           type: "datetime";
           hint?: string;
           label?: string;
+        }
+      | {
+          type: "select";
+          // Dropdown options. Use plain strings, or {value,label} when the
+          // stored value should differ from what the writer sees.
+          options: Array<string | { value: string; label?: string }>;
+          hint?: string;
+          label?: string;
         };
   };
 }

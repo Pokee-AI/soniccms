@@ -588,8 +588,10 @@ export const fields: ApiConfig["fields"] = {
     label: "Related Comparisons",
   },
   status: {
-    type: "textField",
+    type: "select",
     label: "Status",
+    options: ["draft", "published", "archived"],
+    hint: "draft = not visible to the public (use Preview to see it). published = live on the blog. archived = hidden.",
   },
 };
 

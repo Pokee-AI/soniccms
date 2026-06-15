@@ -4,11 +4,29 @@ import { getFieldDefinitions } from "../../../services/fields";
 import TextField from "./fields/text-field.astro";
 import TextArea from "./fields/text-area.astro";
 import FileUploadField from "./fields/file-upload-field.astro";
+import SelectField from "./fields/select-field.astro";
+import DateTimeField from "./fields/datetime-field.astro";
 
 const { record, title = "Edit" } = Astro.props;
 const { form } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
 const tableConfig = getFieldDefinitions(tableConfigRecord, record);
+
+// Build a "Preview" link to the live frontend's Draft Mode for blog content.
+// Only shown when editing an existing post (we need its slug) and when the
+// preview secret is configured. The secret stays server-side; this admin is
+// itself behind Cloudflare Access.
+const env = (Astro.locals.runtime?.env ?? {}) as unknown as Record<
+  string,
+  string | undefined
+>;
+const previewSecret = env.BLOG_PREVIEW_SECRET;
+const siteUrl = env.BLOG_PREVIEW_SITE_URL || "https://pokee.ai";
+const isBlogForm = form === "generalPost" || form === "comparisonPosts";
+const previewUrl =
+  isBlogForm && record?.slug && previewSecret
+    ? `${siteUrl}/api/blog-preview?secret=${encodeURIComponent(previewSecret)}&slug=${encodeURIComponent(record.slug)}`
+    : null;
 ---
 
 <form method="post">
@@ -26,6 +44,10 @@ const tableConfig = getFieldDefinitions(tableConfigRecord, record);
               <div class="mt-4">
                 {((field.key.includes('MediaUrls') || field.key === 'mediaUrls' || field.key === 'coverMediaUrl') && field.type === "textField") ? (
                   <FileUploadField field={field} record={record} />
+                ) : field.type === "select" ? (
+                  <SelectField field={field} />
+                ) : field.type === "datetime" ? (
+                  <DateTimeField field={field} />
                 ) : field.type === "textArea" ? (
                   <TextArea field={field} />
                 ) : (
@@ -36,6 +58,16 @@ const tableConfig = getFieldDefinitions(tableConfigRecord, record);
           }
 
           <div class="mt-6 flex items-center justify-end gap-x-6">
+            {previewUrl && (
+              <a
+                href={previewUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="mr-auto rounded-md bg-amber-500 px-3 py-2 text-sm font-semibold text-amber-950 shadow-sm hover:bg-amber-400"
+                title="Save first to preview your latest changes"
+                >👀 Preview ↗</a
+              >
+            )}
             <a
               href={`/admin/tables/${form}`}
               class="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
@@ -47,6 +79,12 @@ const tableConfig = getFieldDefinitions(tableConfigRecord, record);
               >Save</button
             >
           </div>
+          {previewUrl && (
+            <p class="mt-2 text-right text-xs text-gray-400">
+              Preview opens the live page in a private draft view — only you see
+              it, and it isn't published or indexed. Save before previewing.
+            </p>
+          )}
         </div>
       </div>
     </div>
