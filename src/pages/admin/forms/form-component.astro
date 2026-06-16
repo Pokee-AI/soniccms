@@ -31,8 +31,27 @@ const previewUrl =
 
 <form method="post">
   <div class="space-y-12 mx-auto max-w-7xl">
-    <div class="border-b border-white/10 pb-12">
-      <h2 class="text-base font-semibold leading-7 text-white">
+    <div class="border-b border-border pb-12">
+      <a
+        href={`/admin/tables/${form}`}
+        class="inline-flex items-center gap-1 rounded-md bg-black px-2.5 py-1.5 text-sm font-medium text-white hover:bg-gray-800"
+        aria-label="Back to list"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 20 20"
+          fill="currentColor"
+          class="h-4 w-4"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M17 10a.75.75 0 0 1-.75.75H5.612l4.158 3.96a.75.75 0 1 1-1.04 1.08l-5.5-5.25a.75.75 0 0 1 0-1.08l5.5-5.25a.75.75 0 1 1 1.04 1.08L5.612 9.25H16.25A.75.75 0 0 1 17 10Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        Back
+      </a>
+      <h2 class="mt-4 text-base font-semibold leading-7 text-foreground">
         {title}
         {tableConfigRecord.name}
       </h2>
@@ -70,17 +89,17 @@ const previewUrl =
             )}
             <a
               href={`/admin/tables/${form}`}
-              class="rounded-md bg-gray-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
+              class="rounded-md bg-secondary px-3 py-2 text-sm font-semibold text-secondary-foreground shadow-sm hover:bg-secondary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500"
               >Cancel</a
             >
             <button
               type="submit"
-              class="rounded-md bg-indigo-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              class="rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
               >Save</button
             >
           </div>
           {previewUrl && (
-            <p class="mt-2 text-right text-xs text-gray-400">
+            <p class="mt-2 text-right text-xs text-muted-foreground">
               Opens this post on the preview site (dev.pokee.ai), where drafts
               are visible before publishing. Save before previewing.
             </p>

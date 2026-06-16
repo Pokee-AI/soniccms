@@ -8,7 +8,7 @@ const current = field.value ?? "";
   <div class="sm:col-span-4">
     <label
       for={field.key}
-      class="block text-sm font-medium leading-6 text-white"
+      class="block text-sm font-medium leading-6 text-foreground"
     >
       {field.label || field.key}
     </label>
@@ -16,7 +16,7 @@ const current = field.value ?? "";
       <select
         id={field.key}
         name={field.key}
-        class="block w-full rounded-md border-0 bg-white/5 py-1.5 pl-2 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6 [&>option]:bg-gray-800"
+        class="block w-full rounded-md border-0 bg-background py-1.5 pl-2 text-foreground shadow-sm ring-1 ring-inset ring-input focus:ring-2 focus:ring-inset focus:ring-pokee-purple sm:text-sm sm:leading-6 [&>option]:bg-card"
       >
         {options.map((opt) => {
           const value = typeof opt === "string" ? opt : opt.value;
@@ -30,7 +30,7 @@ const current = field.value ?? "";
       </select>
     </div>
     {field.hint && (
-      <p class="mt-2 text-sm text-gray-400">{field.hint}</p>
+      <p class="mt-2 text-sm text-muted-foreground">{field.hint}</p>
     )}
   </div>
 )}

@@ -1,4 +1,5 @@
 ---
+import "../../../styles/global.css";
 import { apiConfig, type ApiConfig } from "../../../db/routes";
 
 export const prerender = true;
@@ -6,7 +7,17 @@ export const prerender = true;
 // import Footer from '../components/Footer.astro';
 const { title } = Astro.props;
 
-const tables = apiConfig.filter((t) => t.route !== 'users')
+// Writer-facing collections shown at the top of the sidebar (just the blog).
+// `comparisonPosts` (retired 150-field legacy type) and `users` are excluded;
+// everything technical goes in the collapsed "Advanced" section below.
+const WRITER_ROUTES = ['generalPost'];
+const tables = apiConfig.filter((t) => WRITER_ROUTES.includes(t.route));
+const systemTables = apiConfig.filter(
+  (t) =>
+    !WRITER_ROUTES.includes(t.route) &&
+    t.route !== 'comparisonPosts' &&
+    t.route !== 'users',
+);
 import SonicJsLogo from '../../../../public/images/sonicjs-logo.svg';
 import { Picture } from "astro:assets";
 import { Image } from 'astro:assets';
@@ -18,7 +29,7 @@ const version = pkg.version;
 console.log(version)
 ---
 
-<html lang="en" class="h-full bg-gray-900"></html>
+<html lang="en" class="h-full bg-background"></html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -57,7 +68,7 @@ console.log(version)
             From: "opacity-100"
             To: "opacity-0"
         -->
-      <div class="fixed inset-0 bg-gray-900/80" aria-hidden="true"></div>
+      <div class="fixed inset-0 bg-black/50" aria-hidden="true"></div>
 
       <div class="fixed inset-0 flex">
         <!--
@@ -85,7 +96,7 @@ console.log(version)
             <button type="button" class="-m-2.5 p-2.5">
               <span class="sr-only">Close sidebar</span>
               <svg
-                class="h-6 w-6 text-white"
+                class="h-6 w-6 text-foreground"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke-width="1.5"
@@ -102,7 +113,7 @@ console.log(version)
 
           <!-- Sidebar component, swap this element with another sidebar if you like -->
           <div
-            class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10"
+            class="flex grow flex-col gap-y-5 overflow-y-auto bg-card px-6 pb-4 ring-1 ring-border"
           >
             <div class="flex h-16 shrink-0 items-center">
               <img
@@ -119,7 +130,7 @@ console.log(version)
                       <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md bg-gray-800 p-2 text-sm font-semibold leading-6 text-white"
+                        class="group flex gap-x-3 rounded-md bg-secondary p-2 text-sm font-semibold leading-6 text-foreground"
                       >
                         <svg
                           class="h-6 w-6 shrink-0"
@@ -141,7 +152,7 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <svg
                           class="h-6 w-6 shrink-0"
@@ -163,7 +174,7 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <svg
                           class="h-6 w-6 shrink-0"
@@ -185,7 +196,7 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <svg
                           class="h-6 w-6 shrink-0"
@@ -207,7 +218,7 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <svg
                           class="h-6 w-6 shrink-0"
@@ -229,7 +240,7 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <svg
                           class="h-6 w-6 shrink-0"
@@ -265,7 +276,7 @@ console.log(version)
                           <li>
                             <a
                               href="#"
-                              class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                              class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                             >
                               <svg
                                 class="h-6 w-6 shrink-0"
@@ -286,7 +297,7 @@ console.log(version)
                                   d="M13.5 10.5H21A7.5 7.5 0 0013.5 3v7.5z"
                                 />
                               </svg>
-                              {item.route}
+                              {item.name}
                             </a>
                           </li>
                         );
@@ -295,7 +306,7 @@ console.log(version)
                   </ul>
                 </li>
                 <li>
-                  <div class="text-xs font-semibold leading-6 text-gray-400">
+                  <div class="text-xs font-semibold leading-6 text-muted-foreground">
                     Your teams
                   </div>
                   <ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -303,10 +314,10 @@ console.log(version)
                       <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <span
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
+                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-[0.625rem] font-medium text-muted-foreground group-hover:text-foreground"
                           >H</span
                         >
                         <span class="truncate">Heroicons</span>
@@ -315,10 +326,10 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <span
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
+                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-[0.625rem] font-medium text-muted-foreground group-hover:text-foreground"
                           >T</span
                         >
                         <span class="truncate">Tailwind Labs</span>
@@ -327,10 +338,10 @@ console.log(version)
                     <li>
                       <a
                         href="#"
-                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                        class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
                         <span
-                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-gray-700 bg-gray-800 text-[0.625rem] font-medium text-gray-400 group-hover:text-white"
+                          class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-border bg-muted text-[0.625rem] font-medium text-muted-foreground group-hover:text-foreground"
                           >W</span
                         >
                         <span class="truncate">Workcation</span>
@@ -341,7 +352,7 @@ console.log(version)
                 <li class="mt-auto">
                   <a
                     href="/admin/settings"
-                    class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                     <svg
                       class="h-6 w-6 shrink-0"
@@ -377,7 +388,7 @@ console.log(version)
     >
       <!-- Sidebar component, swap this element with another sidebar if you like -->
       <div
-        class="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 border-e border-gray-800"
+        class="flex grow flex-col gap-y-5 overflow-y-auto bg-card px-6 pb-4 border-e border-border"
       >
         <div class="flex h-16 shrink-0 items-center">
           <a href="/admin" class="p-0 m-0 flex items-center gap-2"> 
@@ -392,8 +403,8 @@ console.log(version)
           <ul role="list" class="flex flex-1 flex-col gap-y-7">
          
             <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">
-                Schemas
+              <div class="text-xs font-semibold leading-6 text-muted-foreground">
+                Content
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">              
                 {
@@ -410,7 +421,7 @@ console.log(version)
                     <li>
                   <a
                     href=`/admin/tables/${item.route}`
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                     <div set:html={item.icon} />
 
@@ -425,15 +436,49 @@ console.log(version)
             </li>
 
             <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">
-                Endpoints
-              </div>
+              <details class="group">
+                <summary class="flex cursor-pointer list-none items-center gap-x-2 rounded-md p-2 text-xs font-semibold leading-6 text-muted-foreground hover:bg-muted">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    class="h-4 w-4 transition-transform group-open:rotate-90"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  Advanced
+                </summary>
+                <ul role="list" class="mt-2 space-y-6">
+                  <li>
+                    <ul role="list" class="-mx-2 space-y-1">
+                      {systemTables.map((item: ApiConfig) => (
+                        <li>
+                          <a
+                            href={`/admin/tables/${item.route}`}
+                            class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
+                          >
+                            <div set:html={item.icon} />
+                            {item.name}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </li>
+
+                  <li>
+                    <div class="text-xs font-semibold leading-6 text-muted-foreground">
+                      Endpoints
+                    </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
                 <li>
                   <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                   <a
                     href="/admin/api-specs"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" />
@@ -446,7 +491,7 @@ console.log(version)
                 <!-- <li>
                   <a
                     href="#"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
@@ -458,7 +503,7 @@ console.log(version)
                 <li>
                   <a
                     href="#"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
@@ -471,7 +516,7 @@ console.log(version)
             </li>
 
             <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">
+              <div class="text-xs font-semibold leading-6 text-muted-foreground">
                 Email
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -479,7 +524,7 @@ console.log(version)
                   <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                   <a
                     href="/admin/emails"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
@@ -495,7 +540,7 @@ console.log(version)
             </li>
 
             <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">
+              <div class="text-xs font-semibold leading-6 text-muted-foreground">
                 Users
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -503,7 +548,7 @@ console.log(version)
                   <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                   <a
                     href="/admin/tables/users"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
@@ -515,7 +560,7 @@ console.log(version)
                 <!-- <li>
                   <a
                     href="#"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" />
@@ -527,7 +572,7 @@ console.log(version)
                 <li>
                   <a
                     href="#"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" />
@@ -540,7 +585,7 @@ console.log(version)
             </li>
 
             <li>
-              <div class="text-xs font-semibold leading-6 text-gray-400">
+              <div class="text-xs font-semibold leading-6 text-muted-foreground">
                 Cache
               </div>
               <ul role="list" class="-mx-2 mt-2 space-y-1">
@@ -548,7 +593,7 @@ console.log(version)
                   <!-- Current: "bg-gray-800 text-white", Default: "text-gray-400 hover:text-white hover:bg-gray-800" -->
                   <a
                     href="/admin/cache"
-                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                    class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0ZM3.75 12h.007v.008H3.75V12Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm-.375 5.25h.007v.008H3.75v-.008Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
@@ -561,7 +606,7 @@ console.log(version)
                 <li>
                   <a
                   href="/admin/cache"
-                  class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                  class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.242 5.992h12m-12 6.003H20.24m-12 5.999h12M4.117 7.495v-3.75H2.99m1.125 3.75H2.99m1.125 0H5.24m-1.92 2.577a1.125 1.125 0 1 1 1.591 1.59l-1.83 1.83h2.16M2.99 15.745h1.125a1.125 1.125 0 0 1 0 2.25H3.74m0-.002h.375a1.125 1.125 0 0 1 0 2.25H2.99" />
@@ -574,7 +619,7 @@ console.log(version)
                 <li>
                   <a
                   href="/admin/cache"
-                  class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                  class="group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
                   >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -586,13 +631,14 @@ console.log(version)
                 </li>
               </ul>
             </li>
-
-            
+                </ul>
+              </details>
+            </li>
 
             <li class="mt-auto">
               <a
                 href="/admin/settings"
-                class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
+                class="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <svg
                   class="h-6 w-6 shrink-0"
@@ -623,9 +669,9 @@ console.log(version)
 
     <div class="lg:pl-72">
       <div
-        class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-800 bg-gray-900 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
+        class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-border bg-card px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8"
       >
-        <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
+        <button type="button" class="-m-2.5 p-2.5 text-muted-foreground lg:hidden">
           <span class="sr-only">Open sidebar</span>
           <svg
             class="h-6 w-6"
@@ -643,7 +689,7 @@ console.log(version)
         </button>
 
         <!-- Separator -->
-        <div class="h-6 w-px bg-gray-900/10 lg:hidden" aria-hidden="true"></div>
+        <div class="h-6 w-px bg-border lg:hidden" aria-hidden="true"></div>
 
         <div class="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
           <!-- <form class="relative flex flex-1" action="#" method="GET">
@@ -693,13 +739,13 @@ console.log(version)
 
             <!-- Separator -->
             <div
-              class="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
+              class="hidden lg:block lg:h-6 lg:w-px lg:bg-border"
               aria-hidden="true"
             >
             </div>
 
             <!-- Profile dropdown -->
-            <div class="relative text-white" >
+            <div class="relative text-foreground" >
               <button
                 type="button"
                 class="-m-1.5 flex items-center p-1.5"
@@ -716,11 +762,11 @@ console.log(version)
                 <span class="hidden lg:flex lg:items-center">
                   {Astro.locals.user &&
                     <span
-                      class="ml-4 text-sm font-semibold leading-6 text-white"
+                      class="ml-4 text-sm font-semibold leading-6 text-foreground"
                       aria-hidden="true">{Astro.locals.user.firstName} {Astro.locals.user.lastName}</span>
                     }
                   <svg
-                    class="ml-2 h-5 w-5 text-gray-400"
+                    class="ml-2 h-5 w-5 text-muted-foreground"
                     viewBox="0 0 20 20"
                     fill="currentColor"
                     aria-hidden="true"
@@ -744,7 +790,7 @@ console.log(version)
                     To: "transform opacity-0 scale-95"
                 -->
               <div
-                class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 focus:outline-none user-menu hidden"
+                class="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-card py-2 shadow-lg ring-1 ring-border focus:outline-none user-menu hidden"
                 role="menu"
                 aria-orientation="vertical"
                 aria-labelledby="user-menu-button"
@@ -754,14 +800,14 @@ console.log(version)
                 <!-- Active: "bg-gray-50", Not Active: "" -->
                 <a
                   href={profileLink}
-                  class="block px-3 py-1 text-sm leading-6 text-gray-900"
+                  class="block px-3 py-1 text-sm leading-6 text-foreground"
                   role="menuitem"
                   tabindex="-1"
                   id="user-menu-item-0">Your profile</a
                 >
                 <a
                   href="/admin/logout"
-                  class="block px-3 py-1 text-sm leading-6 text-gray-900"
+                  class="block px-3 py-1 text-sm leading-6 text-foreground"
                   role="menuitem"
                   tabindex="-1"
                   id="user-menu-item-1">Log out</a
@@ -773,11 +819,11 @@ console.log(version)
       </div>
 
       <main class="py-10">
-        <div class="px-4 sm:px-6 lg:px-8 text-white">
+        <div class="px-4 sm:px-6 lg:px-8 text-foreground">
           <slot />
         </div>
 
-    <div class="absolute top-5 left-[180px] inline-flex items-center rounded-md bg-indigo-500/10 px-2 py-1 text-xs font-medium text-indigo-400 ring-1 ring-inset ring-indigo-500/20 z-[100]">
+    <div class="absolute top-5 left-[180px] inline-flex items-center rounded-md bg-pokee-purple/10 px-2 py-1 text-xs font-medium text-pokee-purple ring-1 ring-inset ring-pokee-purple/20 z-[100]">
       v{version}
     </div>
   </main>

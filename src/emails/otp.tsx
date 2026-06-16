@@ -24,39 +24,45 @@ export default OTPEmail;
 
 // Styles for the unique content
 const paragraph = {
-  color: "#525f7f",
+  color: "#171717",
   fontSize: "16px",
   lineHeight: "24px",
   textAlign: "left" as const,
+  fontFamily:
+    "Gabarito, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
 };
 
 const otp = {
-  color: "#fbfbfb",
+  color: "#ffffff",
   fontSize: "46px",
   lineHeight: "48px",
   textAlign: "center" as const,
-  backgroundColor: "#656ee8",
+  backgroundColor: "#171717",
   padding: "40px",
   margin: "60px",
-  borderRadius: "5px",
+  borderRadius: "8px",
+  fontFamily:
+    "Gabarito, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
 };
 const anchor = {
-  color: "#556cd6",
+  color: "#784cd9",
 };
 
 const hr = {
-  borderColor: "#e6ebf1",
+  borderColor: "#e8e8e8",
   margin: "20px 0",
 };
 
 const button = {
-  backgroundColor: "#656ee8",
-  borderRadius: "5px",
-  color: "#fff",
+  backgroundColor: "#171717",
+  borderRadius: "8px",
+  color: "#ffffff",
   fontSize: "16px",
   fontWeight: "bold",
   textDecoration: "none",
   textAlign: "center" as const,
   display: "block",
   padding: "10px",
+  fontFamily:
+    "Gabarito, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
 };

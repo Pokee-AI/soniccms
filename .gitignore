@@ -39,3 +39,5 @@ build.txt
 
 # local sonicjs-core
 _sonicjs-core
+# wrangler local secrets
+.dev.vars

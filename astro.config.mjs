@@ -7,7 +7,7 @@ import { hooks } from './src/hooks';
 // https://astro.build/config
 export default defineConfig({
   output: "server",
-  integrations: [tailwind(), react(), hooks],
+  integrations: [tailwind({ applyBaseStyles: false }), react(), hooks],
   adapter: cloudflare({
     platformProxy: {
       enabled: true,

@@ -93,7 +93,7 @@ if (Astro.request.method === "POST") {
       />
 
       <h2
-        class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-white"
+        class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-foreground"
       >
         Register your admin account
       </h2>
@@ -105,7 +105,7 @@ if (Astro.request.method === "POST") {
         <div>
           <label
             for="firstName"
-            class="block text-sm font-medium leading-6 text-white"
+            class="block text-sm font-medium leading-6 text-foreground"
             >First Name</label
           >
           <div class="mt-2">
@@ -116,7 +116,7 @@ if (Astro.request.method === "POST") {
               autocomplete="firstName"
               value="John"
               required
-              class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 bg-background py-1.5 text-foreground shadow-sm ring-1 ring-inset ring-input focus:ring-2 focus:ring-inset focus:ring-pokee-purple sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -124,7 +124,7 @@ if (Astro.request.method === "POST") {
         <div>
           <label
             for="lastName"
-            class="block text-sm font-medium leading-6 text-white"
+            class="block text-sm font-medium leading-6 text-foreground"
             >Last Name</label
           >
           <div class="mt-2">
@@ -135,7 +135,7 @@ if (Astro.request.method === "POST") {
               autocomplete="lastName"
               value="Doe"
               required
-              class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 bg-background py-1.5 text-foreground shadow-sm ring-1 ring-inset ring-input focus:ring-2 focus:ring-inset focus:ring-pokee-purple sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -144,7 +144,7 @@ if (Astro.request.method === "POST") {
         <div>
           <label
             for="email"
-            class="block text-sm font-medium leading-6 text-white"
+            class="block text-sm font-medium leading-6 text-foreground"
             >Email address</label
           >
           <div class="mt-2">
@@ -154,7 +154,7 @@ if (Astro.request.method === "POST") {
               type="email"
               autocomplete="email"
               required
-              class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 bg-background py-1.5 text-foreground shadow-sm ring-1 ring-inset ring-input focus:ring-2 focus:ring-inset focus:ring-pokee-purple sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -163,7 +163,7 @@ if (Astro.request.method === "POST") {
           <div class="flex items-center justify-between">
             <label
               for="password"
-              class="block text-sm font-medium leading-6 text-white"
+              class="block text-sm font-medium leading-6 text-foreground"
               >Password</label
             >
            
@@ -175,7 +175,7 @@ if (Astro.request.method === "POST") {
               type="password"
               autocomplete="current-password"
               required
-              class="block w-full rounded-md border-0 bg-white/5 py-1.5 text-white shadow-sm ring-1 ring-inset ring-white/10 focus:ring-2 focus:ring-inset focus:ring-indigo-500 sm:text-sm sm:leading-6"
+              class="block w-full rounded-md border-0 bg-background py-1.5 text-foreground shadow-sm ring-1 ring-inset ring-input focus:ring-2 focus:ring-inset focus:ring-pokee-purple sm:text-sm sm:leading-6"
             />
           </div>
         </div>
@@ -183,18 +183,18 @@ if (Astro.request.method === "POST") {
         <div>
           <button
             type="submit"
-            class="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+            class="flex w-full justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-3 py-1.5 text-sm font-semibold leading-6 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
             >Register</button
           >
         </div>
       </form>
 
-      <p class="mt-10 text-center text-sm text-gray-400">
+      <p class="mt-10 text-center text-sm text-muted-foreground">
         Need help?
         <a
           href="https://discord.gg/8bMy6bv3sZ"
           target="_blank"
-          class="font-semibold leading-6 text-indigo-400 hover:text-indigo-300"
+          class="font-semibold leading-6 text-pokee-purple hover:text-pokee-purple-hover"
           >Join us on Discord</a
         >
       </p>

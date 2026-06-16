@@ -1,4 +1,7 @@
-<html lang="en" class="h-full bg-gray-900"></html>
+---
+import "../styles/global.css";
+---
+<html lang="en" class="h-full bg-background"></html>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -46,7 +49,7 @@
           To: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
       -->
       <div
-        class="relative transform overflow-hidden rounded-lg bg-white px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
+        class="relative transform overflow-hidden rounded-lg bg-card px-4 pb-4 pt-5 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-sm sm:p-6"
       >
         <div>
           <div
@@ -68,13 +71,13 @@
           </div>
           <div class="mt-3 text-center sm:mt-5">
             <h3
-              class="text-base font-semibold leading-6 text-gray-900"
+              class="text-base font-semibold leading-6 text-foreground"
               id="modal-title"
             >
               Welcome to SonicJs
             </h3>
             <div class="mt-2">
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-muted-foreground">
                 This is your home page. If you want to build your app in Astro and have a single code base for your front end, you can edit this page. Otherwise you can make /admin your homepage. <a target="_blank" href="https://sonicjs.com">Click here to see docs.</a>
               </p>
             </div>
@@ -83,7 +86,7 @@
         <div class="mt-5 sm:mt-6">
           <a
             href="/admin"
-            class="inline-flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            class="inline-flex w-full justify-center rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
             >Go To Admin</a
           >
         </div>

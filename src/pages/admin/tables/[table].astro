@@ -16,8 +16,16 @@ const tableConfig = getFieldDefinitions(tableConfigRecord);
 
 const token = getToken(Astro);
 
+// Base URL for the "Preview" row action — a draft-rendering site (dev.pokee.ai
+// by default, or localhost in dev). Drafts render there directly, no secret.
+const env = (Astro.locals.runtime?.env ?? {}) as unknown as Record<
+  string,
+  string | undefined
+>;
+const previewSiteUrl = env.BLOG_PREVIEW_SITE_URL || "https://dev.pokee.ai";
+
 ---
 
 <AdminLayout title=`SonicJs Admin` | {Astro.params.table} `>
-  <Table client:load tableConfig={tableConfig} token={token} />
+  <Table client:load tableConfig={tableConfig} token={token} previewSiteUrl={previewSiteUrl} />
 </AdminLayout>

@@ -28,7 +28,10 @@ export const login = async (
 
   let userPassword = user?.password;
   if (!user) {
-    return null;
+    // No account with this email. Return a generic error (don't reveal whether
+    // the email or the password was wrong) so the API responds 401 instead of
+    // crashing on `loginResult.error` when login() returns null.
+    return { error: "Email/Password combination invalid" };
   }
 
   let isPasswordCorrect = false;

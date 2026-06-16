@@ -204,6 +204,16 @@ export const hooks: ApiConfig["hooks"] = {
   },
 };
 
+// Columns shown in the admin list view (in order) — this table has ~150 fields,
+// so a curated set is essential. Everything else stays editable in the form.
+export const listFields = [
+  "seoTitle",
+  "status",
+  "competitor1Name",
+  "author",
+  "datePosted",
+];
+
 export const fields: ApiConfig["fields"] = {
   id: {
     type: "id",

@@ -22,7 +22,7 @@ export const TableSearch = ({ columnFilters, setColumnFilters }) => {
   return (
     <div className="w-96">
       <div className="mt-2">
-        <div className="flex rounded-md bg-white/5 ring-1 ring-inset ring-white/10 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-500">
+        <div className="flex rounded-md bg-background ring-1 ring-inset ring-input focus-within:ring-2 focus-within:ring-inset focus-within:ring-pokee-purple">
           <input
             type="text"
             name="search"
@@ -31,7 +31,7 @@ export const TableSearch = ({ columnFilters, setColumnFilters }) => {
             onChange={(e) => {
               onFilterChange(fieldToFilterOn, e.target.value);
             }}
-            className="flex-1 border-0 bg-transparent py-1.5 pl-2 text-white focus:ring-0 sm:text-sm sm:leading-6"
+            className="flex-1 border-0 bg-transparent py-1.5 pl-2 text-foreground focus:ring-0 sm:text-sm sm:leading-6"
             placeholder="Search"
             autoFocus
             ref={searchInput}

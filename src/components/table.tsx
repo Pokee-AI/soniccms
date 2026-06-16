@@ -31,7 +31,7 @@ const fallbackData = [
   },
 ];
 
-function Table({ tableConfig, token }) {
+function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) {
   // debugger;
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
@@ -50,13 +50,41 @@ function Table({ tableConfig, token }) {
   //     cell: (info) => truncateText(info.getValue(), 30),
   //   })
   // );
-  const columns = tableConfig.formFields.map((formField) => {
+  // Show a curated set of columns when the table defines `listFields`
+  // (industry-standard CMS list view); otherwise fall back to every field.
+  const listKeys =
+    tableConfig.listFields && tableConfig.listFields.length
+      ? tableConfig.listFields
+      : tableConfig.formFields.map((f) => f.key);
+  const listColumnFields = listKeys
+    .map((key) => tableConfig.formFields.find((f) => f.key === key))
+    .filter(Boolean);
+
+  const columns = listColumnFields.map((formField) => {
     return columnHelper.accessor(formField.key, {
-      header: formField.label || formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
-      cell: (info) =>
-        formField.key === "id"
-          ? truncateText(info.getValue(), 5)
-          : truncateText(info.getValue(), 30),
+      header:
+        formField.label ||
+        formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
+      cell: (info) => {
+        if (formField.key === "status") {
+          return <StatusBadge value={info.getValue()} />;
+        }
+        // Title doubles as the edit link, like most CMS list views.
+        if (formField.key === "seoTitle") {
+          return (
+            <a
+              href={`/admin/forms/${tableConfig.route}/${(info.row.original as any).id}`}
+              className="font-medium text-pokee-purple hover:text-pokee-purple-hover"
+            >
+              {truncateText(info.getValue(), 60) || "(untitled)"}
+            </a>
+          );
+        }
+        if (formField.key === "id") {
+          return truncateText(info.getValue(), 5);
+        }
+        return truncateText(info.getValue(), 40);
+      },
     });
   });
 
@@ -180,7 +208,7 @@ function Table({ tableConfig, token }) {
   };
 
   const pagerColor = (pageNumber) => {
-  return pageNumber === table.getState().pagination.pageIndex + 1 ? "border-indigo-500 text-indigo-600" : "border-transparent text-gray-500 hover:text-gray-300";
+  return pageNumber === table.getState().pagination.pageIndex + 1 ? "border-pokee-purple text-pokee-purple" : "border-transparent text-muted-foreground hover:text-foreground";
   }
 
   if (table) {
@@ -191,7 +219,7 @@ function Table({ tableConfig, token }) {
     );
 
     return (
-      <div className="bg-gray-900">
+      <div className="bg-background">
         {showDeleteConfirmation && (
           <DeleteConfirmation
             open={showDeleteConfirmation}
@@ -201,18 +229,18 @@ function Table({ tableConfig, token }) {
         )}
 
         <div className="mx-auto">
-          <div className="bg-gray-900 py-10">
+          <div className="bg-background py-10">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
-                  <h1 className="text-base font-semibold leading-6 text-white">
+                  <h1 className="text-base font-semibold leading-6 text-foreground">
                     {tableConfig.name.toUpperCase()}
                   </h1>
                 </div>
                 <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                   <button
                     type="button"
-                    className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium p-2 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
                     onClick={() => {
                       window.location.href = `/admin/forms/${tableConfig.route}`;
                     }}
@@ -225,7 +253,7 @@ function Table({ tableConfig, token }) {
               <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <table className="min-w-full divide-y divide-gray-300">
+                    <table className="min-w-full divide-y divide-border">
                       <thead>
                         {table.getHeaderGroups().map((headerGroup) => {
                           return (
@@ -234,7 +262,7 @@ function Table({ tableConfig, token }) {
                                 return (
                                   <th
                                     scope="col"
-                                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-100"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
                                     onClick={header.column.getToggleSortingHandler()}
                                   >
                                     <a href="#" className="group inline-flex">
@@ -306,7 +334,7 @@ function Table({ tableConfig, token }) {
                                 return (
                                   <td
                                     key={cell.id}
-                                    className="whitespace-nowrap px-3 py-4 text-sm text-gray-300"
+                                    className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground"
                                   >
                                     {flexRender(
                                       cell.column.columnDef.cell,
@@ -315,10 +343,22 @@ function Table({ tableConfig, token }) {
                                   </td>
                                 );
                               })}
+                              {(row.original as any).slug && (
+                                <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
+                                  <a
+                                    href={`${previewSiteUrl}/blog/${(row.original as any).slug}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-amber-600 hover:text-amber-700"
+                                  >
+                                    Preview
+                                  </a>
+                                </td>
+                              )}
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                 <a
-                                  href={`/admin/forms/${tableConfig.route}/${row.getValue("id")}`}
-                                  className="text-indigo-400 hover:text-indigo-300"
+                                  href={`/admin/forms/${tableConfig.route}/${(row.original as any).id}`}
+                                  className="text-pokee-purple hover:text-pokee-purple-hover"
                                 >
                                   Edit
                                 </a>
@@ -326,9 +366,9 @@ function Table({ tableConfig, token }) {
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                 <button
                                   onClick={() =>
-                                    handleDeleteClick(row.getValue("id"))
+                                    handleDeleteClick((row.original as any).id)
                                   }
-                                  className="text-indigo-400 hover:text-indigo-300"
+                                  className="text-pokee-purple hover:text-pokee-purple-hover"
                                 >
                                   Delete
                                 </button>
@@ -343,25 +383,25 @@ function Table({ tableConfig, token }) {
               </div>
             </div>
             <div className="px-4 sm:px-6 lg:px-8 mt-4">
-              <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
+              <nav className="flex items-center justify-between border-t border-border px-4 sm:px-0">
                 <div className="-mt-px flex w-0 flex-1">
                   <Button
                     onClick={() => {
                       table.previousPage();
                     }}
                     disabled={table.getCanPreviousPage()}
-                    className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
+                    className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-muted-foreground hover:border-border hover:text-foreground"
                   >
                     <ArrowLongLeftIcon
                       aria-hidden="true"
-                      className="mr-3 h-5 w-5 text-gray-400"
+                      className="mr-3 h-5 w-5 text-muted-foreground"
                     />
                     Previous
                   </Button>
                 </div>
                 <div className="hidden md:-mt-px md:flex">
                   {pageArray.map((pageNumber) => 
-                    <Button onClick={() => table.setPageIndex(pageNumber-1)} className={"inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium hover:border-gray-300 hover:text-gray-300" + pagerColor(pageNumber)}>
+                    <Button onClick={() => table.setPageIndex(pageNumber-1)} className={"inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium hover:border-border hover:text-foreground" + pagerColor(pageNumber)}>
                       {pageNumber}
                     </Button>
                   )}
@@ -378,12 +418,12 @@ function Table({ tableConfig, token }) {
                       table.nextPage();
                     }}
                     disabled={table.getCanNextPage()}
-                    className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
+                    className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-muted-foreground hover:border-border hover:text-foreground"
                   >
                     Next
                     <ArrowLongRightIcon
                       aria-hidden="true"
-                      className="ml-3 h-5 w-5 text-gray-400"
+                      className="ml-3 h-5 w-5 text-muted-foreground"
                     />
                   </Button>
                 </div>
@@ -398,9 +438,26 @@ function Table({ tableConfig, token }) {
   }
 }
 
+const StatusBadge = ({ value }) => {
+  const v = (value || "draft").toString().toLowerCase();
+  const styles: Record<string, string> = {
+    published: "bg-green-50 text-green-700 ring-green-600/20",
+    draft: "bg-yellow-50 text-yellow-800 ring-yellow-600/20",
+    archived: "bg-gray-100 text-gray-600 ring-gray-500/20",
+    deleted: "bg-red-50 text-red-700 ring-red-600/20",
+  };
+  return (
+    <span
+      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium capitalize ring-1 ring-inset ${styles[v] ?? styles.draft}`}
+    >
+      {v}
+    </span>
+  );
+};
+
 const arrowDown = () => {
   return (
-    <span className="ml-2 flex-none rounded bg-gray-800 text-gray-200 group-hover:bg-gray-700">
+    <span className="ml-2 flex-none rounded bg-muted text-foreground group-hover:bg-secondary">
       <ChevronDownIcon aria-hidden="true" className="h-5 w-5" />
     </span>
   );
@@ -408,7 +465,7 @@ const arrowDown = () => {
 
 const arrowUp = () => {
   return (
-    <span className="ml-2 flex-none rounded bg-gray-800 text-gray-200 group-hover:bg-gray-700">
+    <span className="ml-2 flex-none rounded bg-muted text-foreground group-hover:bg-secondary">
       <ChevronUpIcon aria-hidden="true" className="h-5 w-5" />
     </span>
   );

@@ -45,9 +45,9 @@ export default EmailLayout;
 
 // Styles remain the same
 const main = {
-  backgroundColor: '#f6f9fc',
+  backgroundColor: '#f5f5f5',
   fontFamily:
-    '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Ubuntu,sans-serif',
+    "Gabarito, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
 };
 
 const container = {
@@ -62,12 +62,14 @@ const box = {
 };
 
 const hr = {
-  borderColor: '#e6ebf1',
+  borderColor: '#e8e8e8',
   margin: '20px 0',
 };
 
 const footer = {
-  color: '#8898aa',
+  color: '#737373',
   fontSize: '12px',
   lineHeight: '16px',
+  fontFamily:
+    "Gabarito, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif",
 }; 

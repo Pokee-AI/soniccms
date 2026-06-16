@@ -179,8 +179,8 @@ function TableCacheRequests({ tableConfig }) {
 
   const pagerColor = (pageNumber) => {
     return pageNumber === table.getState().pagination.pageIndex + 1
-      ? "border-indigo-500 text-indigo-600"
-      : "border-transparent text-gray-500 hover:text-gray-300";
+      ? "border-pokee-purple text-pokee-purple"
+      : "border-transparent text-muted-foreground hover:text-foreground";
   };
 
   if (table) {
@@ -191,7 +191,7 @@ function TableCacheRequests({ tableConfig }) {
     );
 
     return (
-      <div className="bg-gray-900">
+      <div className="bg-background">
         {showDeleteConfirmation && (
           <DeleteConfirmation
             open={showDeleteConfirmation}
@@ -201,11 +201,11 @@ function TableCacheRequests({ tableConfig }) {
         )}
 
         <div className="mx-auto">
-          <div className="bg-gray-900 py-10">
+          <div className="bg-background py-10">
             <div className="px-4 sm:px-6 lg:px-8">
               <div className="sm:flex sm:items-center">
                 <div className="sm:flex-auto">
-                  <h1 className="text-base font-semibold leading-6 text-white">
+                  <h1 className="text-base font-semibold leading-6 text-foreground">
                     {tableConfig.name.toUpperCase()}
                   </h1>
                 </div>
@@ -213,27 +213,27 @@ function TableCacheRequests({ tableConfig }) {
                   <a
                     href="/api/v1/admin/purge-kv-cache-requests"
                     type="submit"
-                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-3 py-2 text-sm shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
                   >
-                    Purge KV 
-                    <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-800 ml-2">
+                    Purge KV
+                    <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-foreground ml-2">
                       {kvCount}
                     </span>
                   </a>
                   <a
                     href="/api/v1/admin/purge-d1-cache-requests"
                     type="submit"
-                    className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded-md bg-primary text-primary-foreground hover:bg-primary/90 font-medium px-3 py-2 text-sm shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
                   >
                     Purge D1 Requests
-                    <span className="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-800 ml-2">
+                    <span className="inline-flex items-center rounded-full bg-muted px-2.5 py-0.5 text-xs font-medium text-foreground ml-2">
                       {cacheRequestCount}
                     </span>
                   </a>
 
                   <button
                     type="button"
-                    className="rounded-full bg-indigo-600 p-2 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium p-2 shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-pokee-purple"
                     onClick={() => {
                       window.location.href = `/admin/forms/${tableConfig.route}`;
                     }}
@@ -252,7 +252,7 @@ function TableCacheRequests({ tableConfig }) {
               <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <table className="min-w-full divide-y divide-gray-300">
+                    <table className="min-w-full divide-y divide-border">
                       <thead>
                         {table.getHeaderGroups().map((headerGroup) => {
                           return (
@@ -261,7 +261,7 @@ function TableCacheRequests({ tableConfig }) {
                                 return (
                                   <th
                                     scope="col"
-                                    className="px-3 py-3.5 text-left text-sm font-semibold text-gray-100"
+                                    className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
                                     onClick={header.column.getToggleSortingHandler()}
                                   >
                                     <a href="#" className="group inline-flex">
@@ -332,7 +332,7 @@ function TableCacheRequests({ tableConfig }) {
                                 return (
                                   <td
                                     key={cell.id}
-                                    className="whitespace-nowrap px-3 py-4 text-sm text-gray-300"
+                                    className="whitespace-nowrap px-3 py-4 text-sm text-muted-foreground"
                                   >
                                     {flexRender(
                                       cell.column.columnDef.cell,
@@ -344,7 +344,7 @@ function TableCacheRequests({ tableConfig }) {
                               <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-0">
                                 <a
                                   href={`/admin/forms/${tableConfig.route}/${row.getValue("id")}`}
-                                  className="text-indigo-400 hover:text-indigo-300"
+                                  className="text-pokee-purple hover:text-pokee-purple-hover"
                                 >
                                   Edit
                                 </a>
@@ -358,7 +358,7 @@ function TableCacheRequests({ tableConfig }) {
                                       row.getValue("url")
                                     )
                                   }
-                                  className="text-indigo-400 hover:text-indigo-300"
+                                  className="text-pokee-purple hover:text-pokee-purple-hover"
                                 >
                                   Delete
                                 </button>
@@ -373,18 +373,18 @@ function TableCacheRequests({ tableConfig }) {
               </div>
             </div>
             <div className="px-4 sm:px-6 lg:px-8 mt-4">
-              <nav className="flex items-center justify-between border-t border-gray-200 px-4 sm:px-0">
+              <nav className="flex items-center justify-between border-t border-border px-4 sm:px-0">
                 <div className="-mt-px flex w-0 flex-1">
                   <Button
                     onClick={() => {
                       table.previousPage();
                     }}
                     disabled={table.getCanPreviousPage()}
-                    className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
+                    className="inline-flex items-center border-t-2 border-transparent pr-1 pt-4 text-sm font-medium text-muted-foreground hover:border-border hover:text-foreground"
                   >
                     <ArrowLongLeftIcon
                       aria-hidden="true"
-                      className="mr-3 h-5 w-5 text-gray-400"
+                      className="mr-3 h-5 w-5 text-muted-foreground"
                     />
                     Previous
                   </Button>
@@ -394,7 +394,7 @@ function TableCacheRequests({ tableConfig }) {
                     <Button
                       onClick={() => table.setPageIndex(pageNumber - 1)}
                       className={
-                        "inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium hover:border-gray-300 hover:text-gray-300" +
+                        "inline-flex items-center border-t-2 border-transparent px-4 pt-4 text-sm font-medium hover:border-border hover:text-foreground" +
                         pagerColor(pageNumber)
                       }
                     >
@@ -413,12 +413,12 @@ function TableCacheRequests({ tableConfig }) {
                       table.nextPage();
                     }}
                     disabled={table.getCanNextPage()}
-                    className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-300"
+                    className="inline-flex items-center border-t-2 border-transparent pl-1 pt-4 text-sm font-medium text-muted-foreground hover:border-border hover:text-foreground"
                   >
                     Next
                     <ArrowLongRightIcon
                       aria-hidden="true"
-                      className="ml-3 h-5 w-5 text-gray-400"
+                      className="ml-3 h-5 w-5 text-muted-foreground"
                     />
                   </Button>
                 </div>
@@ -435,7 +435,7 @@ function TableCacheRequests({ tableConfig }) {
 
 const arrowDown = () => {
   return (
-    <span className="ml-2 flex-none rounded bg-gray-800 text-gray-200 group-hover:bg-gray-700">
+    <span className="ml-2 flex-none rounded bg-muted text-foreground group-hover:bg-secondary">
       <ChevronDownIcon aria-hidden="true" className="h-5 w-5" />
     </span>
   );
@@ -443,7 +443,7 @@ const arrowDown = () => {
 
 const arrowUp = () => {
   return (
-    <span className="ml-2 flex-none rounded bg-gray-800 text-gray-200 group-hover:bg-gray-700">
+    <span className="ml-2 flex-none rounded bg-muted text-foreground group-hover:bg-secondary">
       <ChevronUpIcon aria-hidden="true" className="h-5 w-5" />
     </span>
   );

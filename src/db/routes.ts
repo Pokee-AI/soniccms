@@ -222,6 +222,9 @@ export interface ApiConfig {
           label?: string;
         };
   };
+  /** Field keys shown as columns in the admin list/table view, in order.
+   *  When omitted, every field is shown (legacy behavior). */
+  listFields?: string[];
 }
 
 export const apiConfig: ApiConfig[] = [];
@@ -236,6 +239,7 @@ for (const key of Object.keys(tableSchemas)) {
       access: table.access,
       hooks: table.hooks,
       fields: table.fields,
+      listFields: table.listFields,
       name: table.name,
       icon: table.icon,
     });

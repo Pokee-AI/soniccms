@@ -1,0 +1,63 @@
+/* Pokee design system — ported from PokeeAIWebsite for visual consistency.
+ * Loads the Gabarito typeface and defines the brand color tokens. Light theme. */
+@import url("https://fonts.googleapis.com/css2?family=Gabarito:wght@400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Pokee brand palette */
+    --pokee-stroke: #cccccc;
+    --pokee-purple: #784cd9;
+    --pokee-purple-hover: #663ac7;
+    --pokee-purple-light: #dccefb;
+    --pokee-purple-lighter: #f5f2fa;
+    --pokee-purple-dark: #c0a6fa;
+    --pokee-purple-dark-50: rgba(192, 166, 250, 0.5);
+    --pokee-purple-dark-20: rgba(192, 166, 250, 0.2);
+    --pokee-dark-hover: #0f0f0f;
+    --pokee-gray-light: #4a4a4a;
+    --pokee-text-light: #e1e1e1;
+
+    /* Neutral grayscale tokens — no blue tint. --destructive stays red. */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 4.9%;
+
+    --primary: 0 0% 11.2%;
+    --primary-foreground: 0 0% 98%;
+
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 11.2%;
+
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 46.9%;
+
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 91.4%;
+    --input: 0 0% 91.4%;
+    --ring: 0 0% 4.9%;
+
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}

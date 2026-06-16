@@ -94,7 +94,7 @@ export default function FileUpload({
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-medium text-white">
+      <label className="block text-sm font-medium text-foreground">
         {label}
       </label>
       
@@ -107,20 +107,20 @@ export default function FileUpload({
           accept={accept}
           onChange={handleFileSelect}
           disabled={isUploading}
-          className="block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-500 file:text-white hover:file:bg-indigo-400 disabled:opacity-50"
+          className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 disabled:opacity-50"
         />
         
         {isUploading && (
           <div className="flex items-center space-x-2">
-            <div className="w-4 h-4 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-sm text-gray-300">Uploading...</span>
+            <div className="w-4 h-4 border-2 border-pokee-purple border-t-transparent rounded-full animate-spin"></div>
+            <span className="text-sm text-muted-foreground">Uploading...</span>
           </div>
         )}
       </div>
 
       {/* Error Display */}
       {error && (
-        <div className="text-red-400 text-sm bg-red-900/20 border border-red-500/20 rounded-md p-3">
+        <div className="text-red-700 text-sm bg-red-50 border border-red-200 rounded-md p-3">
           {error}
         </div>
       )}
@@ -128,18 +128,18 @@ export default function FileUpload({
       {/* Existing Files Display */}
       {existingUrls.length > 0 && (
         <div className="space-y-2">
-          <h4 className="text-sm font-medium text-gray-300">Uploaded Files:</h4>
+          <h4 className="text-sm font-medium text-muted-foreground">Uploaded Files:</h4>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {existingUrls.map((url, index) => {
               const fileType = getFileType(url);
               const fileName = url.split('/').pop() || `File ${index + 1}`;
               
               return (
-                <div key={url} className="relative group bg-gray-800 rounded-lg p-3 border border-gray-700">
+                <div key={url} className="relative group bg-card rounded-lg p-3 border border-border">
                   <button
                     type="button"
                     onClick={() => removeFile(url)}
-                    className="absolute top-2 right-2 text-red-400 hover:text-red-300 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-2 right-2 text-red-600 hover:text-red-700 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -163,12 +163,12 @@ export default function FileUpload({
                         controls
                       />
                     ) : (
-                      <div className="w-full h-32 bg-gray-700 rounded-md flex items-center justify-center">
-                        <span className="text-gray-400">File</span>
+                      <div className="w-full h-32 bg-muted rounded-md flex items-center justify-center">
+                        <span className="text-muted-foreground">File</span>
                       </div>
                     )}
                     
-                    <p className="text-xs text-gray-400 truncate" title={fileName}>
+                    <p className="text-xs text-muted-foreground truncate" title={fileName}>
                       {fileName}
                     </p>
                   </div>
