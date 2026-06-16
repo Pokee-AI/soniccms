@@ -27,6 +27,16 @@ const previewUrl =
   isBlogForm && record?.slug
     ? `${siteUrl}/blog/${encodeURIComponent(record.slug)}`
     : null;
+
+// Optional metadata (card display / categorization) tucked into a collapsible
+// so the main form stays focused on writing the post.
+const ADVANCED_FIELD_KEYS = ["competitorName", "integrationName", "hook"];
+const mainFields = tableConfig.formFields.filter(
+  (field) => !ADVANCED_FIELD_KEYS.includes(field.key),
+);
+const advancedFields = tableConfig.formFields.filter((field) =>
+  ADVANCED_FIELD_KEYS.includes(field.key),
+);
 ---
 
 <form method="post">
@@ -59,7 +69,7 @@ const previewUrl =
       <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div class="sm:col-span-4">
           {
-            tableConfig.formFields.map((field) => (
+            mainFields.map((field) => (
               <div class="mt-4">
                 {((field.key.includes('MediaUrls') || field.key === 'mediaUrls' || field.key === 'coverMediaUrl') && field.type === "textField") ? (
                   <FileUploadField field={field} record={record} />
@@ -75,6 +85,43 @@ const previewUrl =
               </div>
             ))
           }
+
+          {advancedFields.length > 0 && (
+            <details class="group mt-8 rounded-md border border-border">
+              <summary class="flex cursor-pointer list-none items-center justify-between p-4 text-sm font-semibold text-foreground hover:bg-muted">
+                <span>More options — card display &amp; categorization</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-4 w-4 transition-transform group-open:rotate-90"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M7.21 14.77a.75.75 0 0 1 .02-1.06L11.168 10 7.23 6.29a.75.75 0 1 1 1.04-1.08l4.5 4.25a.75.75 0 0 1 0 1.08l-4.5 4.25a.75.75 0 0 1-1.06-.02Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </summary>
+              <div class="border-t border-border px-4 pb-4">
+                {advancedFields.map((field) => (
+                  <div class="mt-4">
+                    {((field.key.includes('MediaUrls') || field.key === 'mediaUrls' || field.key === 'coverMediaUrl') && field.type === "textField") ? (
+                      <FileUploadField field={field} record={record} />
+                    ) : field.type === "select" ? (
+                      <SelectField field={field} />
+                    ) : field.type === "datetime" ? (
+                      <DateTimeField field={field} />
+                    ) : field.type === "textArea" ? (
+                      <TextArea field={field} />
+                    ) : (
+                      <TextField field={field} />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </details>
+          )}
 
           <div class="mt-6 flex items-center justify-end gap-x-6">
             {previewUrl && (

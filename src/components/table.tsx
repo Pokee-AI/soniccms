@@ -80,6 +80,9 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
             </a>
           );
         }
+        if (formField.type === "datetime" || formField.key === "datePosted") {
+          return formatDate(info.getValue());
+        }
         if (formField.key === "id") {
           return truncateText(info.getValue(), 5);
         }
@@ -436,6 +439,24 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
   } else {
     <div>no data yet</div>;
   }
+}
+
+// Render a stored unix timestamp (ms, or seconds for legacy rows) as a readable
+// date for list columns.
+function formatDate(value: any): string {
+  if (value === null || value === undefined || value === "") return "";
+  let ms = Number(value);
+  if (Number.isNaN(ms)) return String(value);
+  if (ms < 1e11) ms *= 1000; // stored as seconds → ms
+  const d = new Date(ms);
+  if (Number.isNaN(d.getTime())) return String(value);
+  return d.toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+  });
 }
 
 const StatusBadge = ({ value }) => {
