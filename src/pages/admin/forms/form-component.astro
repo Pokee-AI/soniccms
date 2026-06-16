@@ -12,20 +12,20 @@ const { form } = Astro.params;
 const tableConfigRecord = apiConfig.find((t) => t.route === form);
 const tableConfig = getFieldDefinitions(tableConfigRecord, record);
 
-// Build a "Preview" link to the live frontend's Draft Mode for blog content.
-// Only shown when editing an existing post (we need its slug) and when the
-// preview secret is configured. The secret stays server-side; this admin is
-// itself behind Cloudflare Access.
+// Build a "Preview" link for blog content. It opens the post on a
+// development-mode site (dev.pokee.ai, or localhost) where draft posts render
+// directly — so no secret or auth is needed. Production (pokee.ai) hides
+// drafts, so it must NOT be used as the preview target. Only shown when
+// editing an existing post (we need its slug).
 const env = (Astro.locals.runtime?.env ?? {}) as unknown as Record<
   string,
   string | undefined
 >;
-const previewSecret = env.BLOG_PREVIEW_SECRET;
-const siteUrl = env.BLOG_PREVIEW_SITE_URL || "https://pokee.ai";
+const siteUrl = env.BLOG_PREVIEW_SITE_URL || "https://dev.pokee.ai";
 const isBlogForm = form === "generalPost" || form === "comparisonPosts";
 const previewUrl =
-  isBlogForm && record?.slug && previewSecret
-    ? `${siteUrl}/api/blog-preview?secret=${encodeURIComponent(previewSecret)}&slug=${encodeURIComponent(record.slug)}`
+  isBlogForm && record?.slug
+    ? `${siteUrl}/blog/${encodeURIComponent(record.slug)}`
     : null;
 ---
 
@@ -81,8 +81,8 @@ const previewUrl =
           </div>
           {previewUrl && (
             <p class="mt-2 text-right text-xs text-gray-400">
-              Preview opens the live page in a private draft view — only you see
-              it, and it isn't published or indexed. Save before previewing.
+              Opens this post on the preview site (dev.pokee.ai), where drafts
+              are visible before publishing. Save before previewing.
             </p>
           )}
         </div>
