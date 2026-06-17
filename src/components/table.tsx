@@ -412,7 +412,7 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
                                   onClick={() =>
                                     handleDeleteClick((row.original as any).id)
                                   }
-                                  className="text-pokee-purple hover:text-pokee-purple-hover"
+                                  className="text-red-600 hover:text-red-700"
                                 >
                                   Delete
                                 </button>

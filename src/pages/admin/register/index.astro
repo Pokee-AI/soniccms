@@ -1,7 +1,5 @@
 ---
 import LoginLayout from "../layouts/admin-login.astro";
-import SonicJsLogo from "../../../../public/images/sonicjs-logo.svg";
-import { Image } from "astro:assets";
 import { doesAdminAccountExist } from "@services/auth";
 import { convertFormDataToObject } from "@services/utils";
 
@@ -83,14 +81,14 @@ if (Astro.request.method === "POST") {
 <LoginLayout title="Login: SonicJs Admin">
   <div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
     <div class="sm:mx-auto sm:w-full sm:max-w-sm">
-      <Image
-        src={SonicJsLogo}
-        class="mx-auto h-10 w-auto"
-        format="svg"
-        alt="Logo"
-        height={26}
-        loading="lazy"
-      />
+      <div class="mx-auto flex items-center justify-center gap-2">
+        <img
+          src="/images/pokee-circle.png"
+          alt="Pokee AI CMS logo"
+          class="h-8 w-8 rounded-sm object-contain"
+        />
+        <span class="text-xl font-semibold text-foreground">Pokee AI CMS</span>
+      </div>
 
       <h2
         class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-foreground"

@@ -1,0 +1,1 @@
+ALTER TABLE `generalPost` ADD `integrationName` text;

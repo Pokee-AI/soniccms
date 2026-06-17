@@ -4,7 +4,7 @@
 # This script demonstrates how to create blog posts using API key authentication
 
 # Configuration
-API_KEY="a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+API_KEY="${API_KEY}"
 BASE_URL="https://sonicjs.pokee-ai-internal.workers.dev"
 
 echo "🚀 Testing SonicJS API Key Authentication"

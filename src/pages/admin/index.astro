@@ -16,7 +16,10 @@ import { apiConfig, type ApiConfig } from "db/routes";
 import AdminLayout from "./layouts/admin-layout.astro";
 import { getTableCounts } from "@services/d1-data";
 
-const tables = apiConfig;
+// Routes hidden from the dashboard stat cards only (table, data, API, and
+// admin list remain fully functional — this just declutters the home page).
+const hiddenStatRoutes = ["comparisonPosts"];
+const tables = apiConfig.filter((item) => !hiddenStatRoutes.includes(item.route));
 const tablesWithStats = [];
 for (const item of tables) {
   const tableCounts = await getTableCounts(Astro.locals.runtime.env.D1, item.table);
@@ -52,7 +55,7 @@ const x = false;
                   return (
                     <div class="relative overflow-hidden rounded-lg bg-card border border-border px-4 pb-12 pt-5 shadow sm:px-6 sm:pt-6">
                       <dt>
-                        <div class="absolute rounded-md bg-pokee-purple p-3">
+                        <div class="absolute rounded-md bg-pokee-purple p-3 text-white">
                           <div set:html={item.icon} />
 
                         </div>
@@ -91,7 +94,7 @@ const x = false;
                               View all
                               <span class="sr-only">
                                 {" "}
-                                Total Subscribers stats
+                                Total {item.name}
                               </span>
                             </a>
                           </div>

@@ -141,6 +141,20 @@
       "when": 1775983049768,
       "tag": "0019_petite_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1775991766069,
+      "tag": "0020_wet_bruce_banner",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1775993022243,
+      "tag": "0021_lowly_night_thrasher",
+      "breakpoints": true
     }
   ]
 }

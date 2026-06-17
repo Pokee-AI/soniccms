@@ -28,7 +28,7 @@ openssl rand -hex 32
 ### Option C: Online Generator
 Visit [randomkeygen.com](https://randomkeygen.com/) and use a "CodeIgniter Encryption Keys" generator.
 
-**Example generated key:** `a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456`
+**Example generated key:** `<YOUR_API_KEY>`
 
 ## Step 2: Configure Your Environment
 
@@ -54,7 +54,7 @@ database_id = "YOUR_D1_ID"
 
 [vars]
 # ... your existing variables ...
-API_KEY = "a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+API_KEY = "<YOUR_API_KEY>"
 ```
 
 ### 2.2 Set Up Cloudflare Resources
@@ -91,7 +91,7 @@ Once deployed, you can test the API key authentication with curl:
 ```bash
 curl -X POST https://your-worker.your-subdomain.workers.dev/api/v1/generalPost \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456" \
+  -H "X-API-Key: <YOUR_API_KEY>" \
   -d '{
     "data": {
       "seoTitle": "My First API Blog Post",
@@ -111,7 +111,7 @@ curl -X POST https://your-worker.your-subdomain.workers.dev/api/v1/generalPost \
 ```bash
 curl -X POST https://your-worker.your-subdomain.workers.dev/api/v1/generalPost \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456" \
+  -H "Authorization: Bearer <YOUR_API_KEY>" \
   -d '{
     "data": {
       "seoTitle": "My Second API Blog Post",
@@ -144,7 +144,7 @@ Create a simple script for your team to use:
 #!/bin/bash
 # create-blog-post.sh
 
-API_KEY="a1b2c3d4e5f6789012345678901234567890abcdef1234567890abcdef123456"
+API_KEY="<YOUR_API_KEY>"
 BASE_URL="https://your-worker.your-subdomain.workers.dev"
 
 curl -X POST "$BASE_URL/api/v1/generalPost" \

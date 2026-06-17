@@ -18,7 +18,6 @@ const systemTables = apiConfig.filter(
     t.route !== 'comparisonPosts' &&
     t.route !== 'users',
 );
-import SonicJsLogo from '../../../../public/images/sonicjs-logo.svg';
 import { Picture } from "astro:assets";
 import { Image } from 'astro:assets';
 import pkg from '../../../../package.json';
@@ -391,9 +390,13 @@ console.log(version)
         class="flex grow flex-col gap-y-5 overflow-y-auto bg-card px-6 pb-4 border-e border-border"
       >
         <div class="flex h-16 shrink-0 items-center">
-          <a href="/admin" class="p-0 m-0 flex items-center gap-2"> 
-            <Image  src={SonicJsLogo} format="svg" alt="Logo" height={26} loading="lazy" />
-         
+          <a href="/admin" class="p-0 m-0 flex items-center gap-2">
+            <img
+              src="/images/pokee-circle.png"
+              alt="Pokee AI CMS logo"
+              class="h-7 w-7 rounded-sm object-contain"
+            />
+            <span class="text-lg font-semibold text-foreground">Pokee AI CMS</span>
           </a>
           
         </div>
@@ -452,7 +455,7 @@ console.log(version)
                   </svg>
                   Advanced
                 </summary>
-                <ul role="list" class="mt-2 space-y-6">
+                <ul role="list" class="mt-2 space-y-6 ml-4 [&_a]:gap-x-2 [&_a]:text-xs [&_a]:leading-6 [&_svg]:size-4">
                   <li>
                     <ul role="list" class="-mx-2 space-y-1">
                       {systemTables.map((item: ApiConfig) => (
