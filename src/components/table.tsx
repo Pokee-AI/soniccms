@@ -70,6 +70,7 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
       header:
         formField.label ||
         formField.key.charAt(0).toUpperCase() + formField.key.slice(1),
+      filterFn: formField.key === "status" ? "equalsString" : undefined,
       cell: (info) => {
         if (formField.key === "status") {
           return <StatusBadge value={info.getValue()} />;
@@ -219,6 +220,22 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
   return pageNumber === table.getState().pagination.pageIndex + 1 ? "border-pokee-purple text-pokee-purple" : "border-transparent text-muted-foreground hover:text-foreground";
   }
 
+  // Status filter (only for tables that have a status column). Options are
+  // derived from the data so any value present (draft/published/archived/…)
+  // shows up.
+  const hasStatusColumn = listColumnFields.some((f) => f.key === "status");
+  const statusOptions = data
+    ? Array.from(new Set((data as any[]).map((r) => r.status).filter(Boolean)))
+    : [];
+  const statusFilter =
+    (columnFilters.find((f) => f.id === "status")?.value as string) ?? "";
+  const setStatusFilter = (value: string) => {
+    setColumnFilters((prev) => {
+      const others = prev.filter((f) => f.id !== "status");
+      return value ? [...others, { id: "status", value }] : others;
+    });
+  };
+
   if (table) {
     console.log("sorting", table.getState().sorting);
     const pageArray = Array.from(
@@ -257,7 +274,26 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
                   </button>
                 </div>
               </div>
-              <div className="mt-8 flow-root">  <TableSearch columnFilters={columnFilters} setColumnFilters={setColumnFilters} /></div>
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex-1">
+                  <TableSearch columnFilters={columnFilters} setColumnFilters={setColumnFilters} />
+                </div>
+                {hasStatusColumn && (
+                  <select
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                    aria-label="Filter by status"
+                    className="rounded-md border-0 bg-background py-1.5 pl-3 pr-8 text-sm capitalize text-foreground shadow-sm ring-1 ring-inset ring-input focus:ring-2 focus:ring-inset focus:ring-pokee-purple [&>option]:bg-card"
+                  >
+                    <option value="">All statuses</option>
+                    {statusOptions.map((s) => (
+                      <option key={s} value={s} className="capitalize">
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
               <div className="mt-8 flow-root">
                 <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                   <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -270,10 +306,10 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
                                 return (
                                   <th
                                     scope="col"
-                                    className="px-3 py-3.5 text-left text-sm font-semibold text-foreground"
+                                    className="cursor-pointer select-none px-3 py-3.5 text-left text-sm font-semibold text-foreground hover:text-pokee-purple"
                                     onClick={header.column.getToggleSortingHandler()}
                                   >
-                                    <a href="#" className="group inline-flex">
+                                    <span className="group inline-flex">
                                       {flexRender(
                                         header.column.columnDef.header,
                                         header.getContext()
@@ -284,7 +320,7 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
                                       }[
                                         header.column.getIsSorted() as string
                                       ] ?? null}
-                                    </a>
+                                    </span>
                                   </th>
 
                                   // <th
