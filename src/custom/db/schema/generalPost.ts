@@ -273,6 +273,6 @@ export const fields: ApiConfig["fields"] = {
     type: "select",
     label: "Status",
     options: ["draft", "published", "archived"],
-    hint: "draft = not visible to the public (use Preview to see it). published = live on the blog. archived = hidden.",
+    hint: "draft = preview-only on dev.pokee.ai, NOT on the live site (use Preview to view). published = live on pokee.ai. archived = hidden everywhere.",
   },
 };

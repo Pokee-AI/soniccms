@@ -37,6 +37,16 @@ const mainFields = tableConfig.formFields.filter(
 const advancedFields = tableConfig.formFields.filter((field) =>
   ADVANCED_FIELD_KEYS.includes(field.key),
 );
+
+// Status banner: tell the writer exactly where this post is visible. Only shown
+// when editing an existing blog post.
+const recordStatus = (record?.status || "draft").toLowerCase();
+const statusBannerClass =
+  recordStatus === "published"
+    ? "border-green-300 bg-green-50 text-green-900"
+    : recordStatus === "archived"
+      ? "border-gray-300 bg-gray-100 text-gray-700"
+      : "border-amber-300 bg-amber-50 text-amber-900";
 ---
 
 <form method="post">
@@ -65,6 +75,23 @@ const advancedFields = tableConfig.formFields.filter((field) =>
         {title}
         {tableConfigRecord.name}
       </h2>
+
+      {isBlogForm && record && (
+        <div class={`mt-4 rounded-md border p-3 text-sm ${statusBannerClass}`}>
+          {recordStatus === "published" ? (
+            <span><strong>Published</strong> — live on pokee.ai.</span>
+          ) : recordStatus === "archived" ? (
+            <span><strong>Archived</strong> — hidden on both pokee.ai and the preview site.</span>
+          ) : (
+            <span>
+              <strong>Draft</strong> — visible only on the preview site
+              (<strong>dev.pokee.ai</strong>), <strong>not</strong> on the live
+              site (pokee.ai). Use <strong>Preview</strong> to view it, then set
+              <strong>Status → Published</strong> to go live.
+            </span>
+          )}
+        </div>
+      )}
 
       <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
         <div class="sm:col-span-4">
@@ -147,8 +174,9 @@ const advancedFields = tableConfig.formFields.filter((field) =>
           </div>
           {previewUrl && (
             <p class="mt-2 text-right text-xs text-muted-foreground">
-              Opens this post on the preview site (dev.pokee.ai), where drafts
-              are visible before publishing. Save before previewing.
+              Preview opens this post on <strong>dev.pokee.ai</strong> (internal
+              preview) — <strong>not</strong> the live pokee.ai. Drafts are
+              visible there; set Status to Published to go live. Save before previewing.
             </p>
           )}
         </div>
