@@ -451,8 +451,12 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
 function formatDate(value: any): string {
   if (value === null || value === undefined || value === "") return "";
   let ms = Number(value);
+  if (Number.isNaN(ms)) {
+    ms = Date.parse(String(value)); // ISO / datetime-local strings
+  } else if (ms < 1e11) {
+    ms *= 1000; // stored as seconds → ms
+  }
   if (Number.isNaN(ms)) return String(value);
-  if (ms < 1e11) ms *= 1000; // stored as seconds → ms
   const d = new Date(ms);
   if (Number.isNaN(d.getTime())) return String(value);
   return d.toLocaleString(undefined, {

@@ -173,11 +173,11 @@ export const PUT: APIRoute = async (context) => {
       content.data
     );
     if (entry?.hooks?.resolveInput?.update) {
-      // content.data = await entry.hooks.resolveInput.update(
-      //   context,
-      //   params.id,
-      //   content.data
-      // );
+      content.data = await entry.hooks.resolveInput.update(
+        context,
+        params.id,
+        content.data
+      );
     }
     delete params.table;
     const result = await updateRecord(

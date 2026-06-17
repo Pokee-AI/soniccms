@@ -100,42 +100,59 @@ export const access: ApiConfig["access"] = {
   },
 };
 
+// Normalize any datePosted input into a unix-millisecond integer so the value
+// is consistent no matter how it was written (an agent via the API, or the CMS
+// date field):
+//   - number in ms (≈1.7e12)              -> kept
+//   - number in seconds (≈1.7e9)          -> ×1000
+//   - numeric string                      -> same rules
+//   - ISO / datetime-local ("2026-06-17T23:52") -> parsed to ms
+//   - unparseable                         -> undefined (caller falls back)
+const toTimestamp = (value: unknown): number | undefined => {
+  if (value === null || value === undefined || value === "") return undefined;
+  if (typeof value === "number") {
+    if (Number.isNaN(value)) return undefined;
+    return value < 1e11 ? Math.round(value * 1000) : Math.round(value);
+  }
+  const str = String(value).trim();
+  if (/^\d+$/.test(str)) {
+    const n = Number(str);
+    return n < 1e11 ? n * 1000 : n;
+  }
+  const ms = new Date(str).getTime();
+  return Number.isNaN(ms) ? undefined : ms;
+};
+
 export const hooks: ApiConfig["hooks"] = {
   resolveInput: {
     create: (ctx, data) => {
-      // Set current timestamp if datePosted is not provided
-      if (!data.datePosted) {
-        data.datePosted = Date.now();
-      } else if (typeof data.datePosted === "string") {
-        data.datePosted = new Date(data.datePosted).getTime();
-      }
-      
-      // Set default author if not provided
+      // Always store datePosted as a unix-ms integer; default to now.
+      data.datePosted = toTimestamp(data.datePosted) ?? Date.now();
+
       if (!data.author) {
         data.author = "Admin";
       }
-      
-      // Set default content if not provided
       if (!data.content) {
         data.content = "Write your content here...";
       }
-      
-      // Set default status to 'draft' if not provided or empty
       if (!data.status || data.status.trim() === "") {
         data.status = "draft";
       }
-      
       return data;
     },
     update: (ctx, id, data) => {
-      // Convert date to timestamp if it's a string
-      if (data.datePosted && typeof data.datePosted === "string") {
-        data.datePosted = new Date(data.datePosted).getTime();
+      // Only touch datePosted when the update includes it; normalize to ms so
+      // a datetime-local string from the form never gets stored verbatim.
+      if (data.datePosted !== undefined && data.datePosted !== null) {
+        const ts = toTimestamp(data.datePosted);
+        if (ts !== undefined) {
+          data.datePosted = ts;
+        }
       }
       return data;
     },
   },
-};3
+};
 
 // Columns shown in the admin list view (in order). Keeps the table scannable
 // instead of dumping all ~18 fields. Everything else stays editable in the form.
