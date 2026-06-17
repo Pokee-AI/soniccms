@@ -36,13 +36,18 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
   const [data, setData] = useState(null);
-  const [sorting, setSorting] = useState<SortingState>([]); // can set initial sorting state here
+  // Default to newest-first by publish date (ignored on tables without it).
+  const [sorting, setSorting] = useState<SortingState>([{ id: "datePosted", desc: true }]);
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(false);
   const [columnFilters, setColumnFilters] = useState([{id:'seoTitle', value: ''}]);
 
-  const pageSize = 100;
+  // Fetch limit for the one-shot load. The table paginates/searches client-side
+  // over this set, so it must be large enough to include every record (otherwise
+  // rows past the limit are invisible AND unsearchable). Bump if a collection
+  // ever exceeds this; the real fix is server-side pagination.
+  const pageSize = 2000;
 
   // const columns = Object.entries(tableConfig.formFields).map(([key, value]) =>
   //   columnHelper.accessor(key, {
