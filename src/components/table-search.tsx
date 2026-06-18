@@ -1,17 +1,27 @@
-import { useCallback } from "react";
+import type { ColumnFiltersState } from "@tanstack/react-table";
+import { useCallback, useRef, type Dispatch, type SetStateAction } from "react";
 
-export const TableSearch = ({ columnFilters, setColumnFilters }) => {
-  // TODO: title should not be hard coded, the developer should be to specify which fields are searchable
-  // debugger;
+type TableSearchProps = {
+  columnFilters: ColumnFiltersState;
+  setColumnFilters: Dispatch<SetStateAction<ColumnFiltersState>>;
+  searchField?: string;
+};
 
-  const fieldToFilterOn = columnFilters[0].id;
+export const TableSearch = ({
+  columnFilters,
+  setColumnFilters,
+  searchField,
+}: TableSearchProps) => {
+  const defaultSearchField = useRef(columnFilters[0]?.id ?? "");
+  const fieldToFilterOn = searchField ?? defaultSearchField.current;
   const filterValue =
-    columnFilters.find((filter) => filter.id === fieldToFilterOn)?.value || "";
+    columnFilters.find((filter) => filter.id === fieldToFilterOn)?.value ?? "";
 
-  const onFilterChange = (id, value) =>
-    setColumnFilters((prev) =>
-      prev.filter((f) => f.id !== id).concat({ id, value })
-    );
+  const onFilterChange = (id: string, value: string) =>
+    setColumnFilters((prev) => {
+      const filters = prev.filter((f) => f.id !== id);
+      return value ? filters.concat({ id, value }) : filters;
+    });
 
   const searchInput = useCallback((inputElement) => {
     if (inputElement) {
@@ -27,9 +37,11 @@ export const TableSearch = ({ columnFilters, setColumnFilters }) => {
             type="text"
             name="search"
             id="search"
-            value={filterValue}
+            value={String(filterValue)}
             onChange={(e) => {
-              onFilterChange(fieldToFilterOn, e.target.value);
+              if (fieldToFilterOn) {
+                onFilterChange(fieldToFilterOn, e.target.value);
+              }
             }}
             className="flex-1 border-0 bg-transparent py-1.5 pl-2 text-foreground focus:ring-0 sm:text-sm sm:leading-6"
             placeholder="Search"

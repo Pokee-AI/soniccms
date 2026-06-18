@@ -4,6 +4,7 @@ import {
   flexRender,
   getCoreRowModel,
   type SortingState,
+  type ColumnFiltersState,
   getSortedRowModel,
   type ColumnDef,
   getPaginationRowModel,
@@ -49,7 +50,7 @@ function TableCacheRequests({ tableConfig }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<{ id: string; url: string } | null>(null);
   const [reload, setReload] = useState(false);
-  const [columnFilters, setColumnFilters] = useState([
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([
     { id: "url", value: "" },
   ]);
 
@@ -247,6 +248,7 @@ function TableCacheRequests({ tableConfig }) {
                 <TableSearch
                   columnFilters={columnFilters}
                   setColumnFilters={setColumnFilters}
+                  searchField="url"
                 />
               </div>
               <div className="mt-8 flow-root">

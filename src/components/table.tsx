@@ -4,6 +4,7 @@ import {
   flexRender,
   getCoreRowModel,
   type SortingState,
+  type ColumnFiltersState,
   getSortedRowModel,
   type ColumnDef,
   getPaginationRowModel,
@@ -41,7 +42,7 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState(false);
-  const [columnFilters, setColumnFilters] = useState([{id:'seoTitle', value: ''}]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
   // Fetch limit for the one-shot load. The table paginates/searches client-side
   // over this set, so it must be large enough to include every record (otherwise
@@ -64,6 +65,11 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
   const listColumnFields = listKeys
     .map((key) => tableConfig.formFields.find((f) => f.key === key))
     .filter(Boolean);
+  const searchField =
+    listColumnFields.find((f) => f.key === "seoTitle")?.key ??
+    listColumnFields.find((f) => f.type === "textField" || f.type === "textArea")
+      ?.key ??
+    listColumnFields[0]?.key;
 
   const columns = listColumnFields.map((formField) => {
     return columnHelper.accessor(formField.key, {
@@ -169,6 +175,10 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
       })();
     }
   }, [confirmDelete]);
+
+  useEffect(() => {
+    table.setPageIndex(0);
+  }, [columnFilters]);
 
   const getData = (originPath) => {
       if (originPath) {
@@ -276,7 +286,11 @@ function Table({ tableConfig, token, previewSiteUrl = "https://dev.pokee.ai" }) 
               </div>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <div className="flex-1">
-                  <TableSearch columnFilters={columnFilters} setColumnFilters={setColumnFilters} />
+                  <TableSearch
+                    columnFilters={columnFilters}
+                    setColumnFilters={setColumnFilters}
+                    searchField={searchField}
+                  />
                 </div>
                 {hasStatusColumn && (
                   <select
